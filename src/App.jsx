@@ -929,6 +929,7 @@ export default function Portfolio() {
                 ["12+", "Projects Delivered"],
                 ["8+", "REST APIs Integrated"],
                 ["100%", "Responsive Design"],
+                ["92.60%", "MCA • SRM Institute"],
               ].map(([n, l]) => (
                 <div key={l} className="text-center">
                   <div
