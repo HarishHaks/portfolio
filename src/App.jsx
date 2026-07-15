@@ -281,7 +281,8 @@ function TicketCard({
           ))}
         </ul>
       </div>
-      <div className="relative flex md:flex-col items-center justify-between md:justify-center gap-3 px-7 py-5 md:py-8 md:w-[30%]">
+      <div className="relative flex flex-col md:flex-col items-center justify-center gap-3 px-7 py-5 md:py-8 md:w-[30%]">
+        {" "}
         <div
           style={{
             fontFamily: "'JetBrains Mono', monospace",
@@ -875,10 +876,14 @@ export default function Portfolio() {
               marginTop: 24,
             }}
           >
-            I build fintech interfaces for a living — bus tickets, loan
+            {/* I build fintech interfaces for a living — bus tickets, loan
             approvals, and payment receipts that have to work the first time.
             React.js, REST APIs, and a close eye on the details recruiters and
-            users both notice.
+            users both notice. */}
+            React.js Developer with hands-on experience building responsive web
+            applications, integrating REST APIs, and developing scalable
+            frontend solutions. Passionate about creating clean, user-friendly
+            interfaces and delivering high-quality web applications.
           </p>
           <div className="hero-anim-4 flex flex-wrap items-center justify-center gap-4 mt-9">
             <a
