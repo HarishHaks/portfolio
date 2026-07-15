@@ -620,7 +620,7 @@ export default function Portfolio() {
         .orb2 { animation: orbFloat2 17s ease-in-out infinite; }
         .orb3 { animation: orbFloat3 12s ease-in-out infinite; }
 
-        .glass-card { transition: transform .35s cubic-bezier(.16,1,.3,1), border-color .35s ease, box-shadow .35s ease, background .35s ease; }
+        .glass-card { transition:transform .5s cubic-bezier(.22,1,.36,1), border-color .35s ease, box-shadow .35s ease, background .35s ease; }
         .glass-hover:hover { transform: translateY(-6px); border-color: ${C.borderHi}; background: ${C.glassHi}; box-shadow: 0 30px 70px -20px rgba(139,92,246,0.28), 0 10px 30px -12px rgba(0,0,0,0.6) !important; }
 
         .nav-link { position: relative; color: ${C.muted}; font-size: 14px; font-weight: 500; padding: 8px 4px; transition: color .25s ease; cursor: pointer; }
@@ -638,8 +638,71 @@ export default function Portfolio() {
         .skill-chip { transition: transform .25s ease, border-color .25s ease, background .25s ease; cursor: default; }
         .skill-chip:hover { transform: translateY(-3px) scale(1.03); border-color: ${C.borderHi}; }
 
-        .mobile-panel { animation: heroIn .35s cubic-bezier(.16,1,.3,1) both; }
+@keyframes mobileMenuOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(.98);
+    filter: blur(10px);
+  }
 
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes mobileMenuClose {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+.mobile-panel{
+  animation: mobileMenuOpen .45s cubic-bezier(.16,1,.3,1);
+  transform-origin: top;
+}
+  .mobile-link{
+    opacity:0;
+    transform:translateX(-18px);
+    animation:mobileItem .45s forwards;
+}
+
+.mobile-link:nth-child(1){animation-delay:.05s;}
+.mobile-link:nth-child(2){animation-delay:.10s;}
+.mobile-link:nth-child(3){animation-delay:.15s;}
+.mobile-link:nth-child(4){animation-delay:.20s;}
+.mobile-link:nth-child(5){animation-delay:.25s;}
+.mobile-link:nth-child(6){animation-delay:.30s;}
+
+@keyframes mobileItem{
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+.mobile-panel .cta-primary{
+    animation:mobileButton .55s .35s both;
+}
+
+@keyframes mobileButton{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+    
         .grad-text { background: ${GRAD}; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
         @media (prefers-reduced-motion: reduce) {
@@ -654,6 +717,24 @@ export default function Portfolio() {
   color: white !important;
   border-color: rgba(255,255,255,0.3) !important;
   box-shadow: 0 10px 25px rgba(139,92,246,0.35);
+}
+  .mobile-panel a{
+    position:relative;
+}
+
+.mobile-panel a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:0%;
+    height:1px;
+    background:linear-gradient(90deg,#8B5CF6,#22D3EE);
+    transition:.35s;
+}
+
+.mobile-panel a:hover::after{
+    width:100%;
 }
       `}</style>
 
@@ -753,7 +834,7 @@ export default function Portfolio() {
                   key={l.href}
                   href={`#${l.href}`}
                   onClick={scrollTo(l.href)}
-                  className={`nav-link ${active === l.href ? "active" : ""}`}
+                  className={`nav-link mobile-link ${active === l.href ? "active" : ""}`}
                 >
                   {l.label}
                 </a>
@@ -782,17 +863,26 @@ export default function Portfolio() {
               className="md:hidden flex items-center justify-center"
               style={{
                 color: C.text,
-                width: 40,
-                height: 40,
-                borderRadius: 12,
+                width: 44,
+                height: 44,
+                borderRadius: 14,
                 border: `1px solid ${C.border}`,
-                background: "rgba(255,255,255,0.04)",
+                background: "rgba(255,255,255,0.05)",
+                transition: "all .45s cubic-bezier(.22,1,.36,1)",
+                transform: navOpen ? "rotate(90deg)" : "rotate(0deg)",
               }}
               onClick={() => setNavOpen((v) => !v)}
               aria-label="Toggle menu"
               aria-expanded={navOpen}
             >
-              {navOpen ? <X size={20} /> : <Menu size={20} />}
+              <div
+                style={{
+                  transform: navOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform .35s cubic-bezier(.16,1,.3,1)",
+                }}
+              >
+                {navOpen ? <X size={20} /> : <Menu size={20} />}
+              </div>
             </button>
           </div>
 
@@ -800,10 +890,12 @@ export default function Portfolio() {
             <div
               className="mobile-panel md:hidden px-6 pb-6 flex flex-col gap-1"
               style={{
-                background: "rgba(5,6,12,0.92)",
-                backdropFilter: "blur(20px)",
+                background: "rgba(5,6,12,0.96)",
+                backdropFilter: "blur(30px)",
+                WebkitBackdropFilter: "blur(30px)",
                 borderTop: `1px solid ${C.border}`,
                 borderBottom: `1px solid ${C.border}`,
+                boxShadow: "0 30px 80px rgba(0,0,0,.45)",
               }}
             >
               {navLinks.map((l) => (
@@ -813,10 +905,17 @@ export default function Portfolio() {
                   onClick={scrollTo(l.href)}
                   className={`nav-link ${active === l.href ? "active" : ""}`}
                   style={{
-                    paddingTop: 14,
-                    paddingBottom: 14,
+                    paddingTop: 15,
+                    paddingBottom: 15,
                     borderBottom: `1px solid ${C.border}`,
                     fontSize: 15,
+                    transition: "all .3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateX(14px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateX(0)";
                   }}
                 >
                   {l.label}
