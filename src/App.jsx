@@ -926,9 +926,9 @@ export default function Portfolio() {
               style={{ borderRadius: 20 }}
             >
               {[
-                ["12", "fintech products shipped"],
-                ["92.60%", "MCA, SRM Institute"],
-                ["Jan 2026", "current role start"],
+                ["12+", "Projects Delivered"],
+                ["8+", "REST APIs Integrated"],
+                ["100%", "Responsive Design"],
               ].map(([n, l]) => (
                 <div key={l} className="text-center">
                   <div
