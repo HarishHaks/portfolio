@@ -27,6 +27,8 @@ import {
   Sparkles,
   Award,
   ExternalLink,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 /* ---------------------------------------------------------
@@ -45,18 +47,32 @@ import {
    Type: Space Grotesk (display, 700/800) / Inter (body) / JetBrains Mono (data)
 --------------------------------------------------------- */
 
-const C = {
+const DARK = {
   bg: "#05060C",
-  glass: "rgba(255,255,255,0.055)",
-  glassHi: "rgba(255,255,255,0.095)",
-  border: "rgba(255,255,255,0.12)",
-  borderHi: "rgba(255,255,255,0.22)",
+  glass: "rgba(255,255,255,.055)",
+  glassHi: "rgba(255,255,255,.095)",
+  border: "rgba(255,255,255,.12)",
+  borderHi: "rgba(255,255,255,.22)",
   violet: "#8B5CF6",
   cyan: "#22D3EE",
   pink: "#F472B6",
   text: "#F6F8FF",
   muted: "#A6AFC9",
   mutedDark: "#6B7392",
+};
+
+const LIGHT = {
+  bg: "#F8FAFC",
+  glass: "rgba(255,255,255,.75)",
+  glassHi: "rgba(255,255,255,.95)",
+  border: "rgba(0,0,0,.08)",
+  borderHi: "rgba(0,0,0,.18)",
+  violet: "#8B5CF6",
+  cyan: "#06B6D4",
+  pink: "#EC4899",
+  text: "#111827",
+  muted: "#475569",
+  mutedDark: "#64748B",
 };
 
 const GRAD = "linear-gradient(135deg, #8B5CF6 0%, #22D3EE 100%)";
@@ -110,7 +126,7 @@ function Reveal({ children, delay = 0, variant = "up" }) {
   );
 }
 
-function Eyebrow({ children, grad = GRAD }) {
+function Eyebrow({ children, grad = GRAD, C = DARK }) {
   return (
     <div
       className="inline-flex items-center gap-2 mb-4 px-3 py-1.5"
@@ -141,10 +157,12 @@ function Eyebrow({ children, grad = GRAD }) {
   );
 }
 
-function SectionTitle({ kicker, title, grad }) {
+function SectionTitle({ kicker, title, grad, C = DARK }) {
   return (
     <div className="mb-14">
-      <Eyebrow grad={grad}>{kicker}</Eyebrow>
+      <Eyebrow grad={grad} C={C}>
+        {kicker}
+      </Eyebrow>
       <h2
         style={{
           fontFamily: "'Space Grotesk', sans-serif",
@@ -167,9 +185,25 @@ function GlassCard({
   style = {},
   hover = true,
   glow,
+  C = DARK,
 }) {
+  const [spotlight, setSpotlight] = useState({
+    x: 50,
+    y: 50,
+  });
+
+  const handleMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    setSpotlight({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
+
   return (
     <div
+      onMouseMove={handleMove}
       className={`glass-card ${hover ? "glass-hover" : ""} ${className}`}
       style={{
         background: C.glass,
@@ -185,6 +219,21 @@ function GlassCard({
         ...style,
       }}
     >
+      <div
+        className="glass-spotlight"
+        style={{
+          background: `
+      radial-gradient(
+        circle at ${spotlight.x}% ${spotlight.y}%,
+        rgba(255,255,255,.25),
+        rgba(139,92,246,.10) 20%,
+        rgba(34,211,238,.06) 35%,
+        transparent 72%
+      )
+    `,
+        }}
+      />
+
       {children}
     </div>
   );
@@ -200,9 +249,10 @@ function TicketCard({
   status,
   grad,
   glow,
+  C,
 }) {
   return (
-    <GlassCard glow={glow} className="flex flex-col md:flex-row">
+    <GlassCard C={C} glow={glow} className="flex flex-col md:flex-row">
       <div
         className="absolute inset-0 opacity-[0.06] pointer-events-none"
         style={{ background: grad }}
@@ -216,7 +266,7 @@ function TicketCard({
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 12,
             fontWeight: 600,
-            color: "#C7CEE6",
+            color: C.muted,
             letterSpacing: "0.1em",
             marginBottom: 12,
           }}
@@ -228,7 +278,7 @@ function TicketCard({
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: "clamp(22px, 2.6vw, 28px)",
             fontWeight: 700,
-            color: "#FFFFFF",
+            color: C.text,
             marginBottom: 12,
           }}
         >
@@ -242,7 +292,7 @@ function TicketCard({
             <span
               key={s}
               style={{
-                color: "#FFFFFF",
+                color: C.text,
                 fontWeight: 600,
                 background: "rgba(255,255,255,0.1)",
                 border: `1px solid ${C.borderHi}`,
@@ -256,7 +306,7 @@ function TicketCard({
         </div>
         <p
           style={{
-            color: "#C7CEE6",
+            color: C.muted,
             fontSize: 15.5,
             lineHeight: 1.8,
             marginBottom: 18,
@@ -270,7 +320,7 @@ function TicketCard({
             <li
               key={i}
               className="flex items-start gap-2.5"
-              style={{ fontSize: 14.5, color: "#E7EBFA", lineHeight: 1.65 }}
+              style={{ fontSize: 14.5, color: C.text, lineHeight: 1.65 }}
             >
               <CheckCircle2
                 size={16}
@@ -288,7 +338,7 @@ function TicketCard({
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 11,
             fontWeight: 600,
-            color: "#C7CEE6",
+            color: C.muted,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
           }}
@@ -315,7 +365,7 @@ function TicketCard({
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 11.5,
             fontWeight: 700,
-            color: "#FFFFFF",
+            color: C.text,
             marginTop: 6,
             background: "rgba(255,255,255,0.1)",
             border: `1px solid ${C.borderHi}`,
@@ -332,9 +382,13 @@ function TicketCard({
 }
 
 /* ---------------- Compact card for additional website projects ---------------- */
-function MiniProjectCard({ title, blurb, grad }) {
+function MiniProjectCard({ title, blurb, grad, C }) {
   return (
-    <GlassCard className="p-6 h-full flex flex-col" glow="rgba(139,92,246,0.1)">
+    <GlassCard
+      C={C}
+      className="p-6 h-full flex flex-col"
+      glow="rgba(139,92,246,0.1)"
+    >
       <div className="flex items-center gap-2.5 mb-4">
         <span
           style={{
@@ -350,7 +404,7 @@ function MiniProjectCard({ title, blurb, grad }) {
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 10.5,
             fontWeight: 600,
-            color: "#C7CEE6",
+            color: C.muted,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
           }}
@@ -363,7 +417,7 @@ function MiniProjectCard({ title, blurb, grad }) {
           fontFamily: "'Space Grotesk', sans-serif",
           fontSize: 17.5,
           fontWeight: 700,
-          color: "#FFFFFF",
+          color: C.text,
           marginBottom: 8,
         }}
       >
@@ -371,7 +425,7 @@ function MiniProjectCard({ title, blurb, grad }) {
       </h4>
       <p
         style={{
-          color: "#C7CEE6",
+          color: C.muted,
           fontSize: 13.5,
           lineHeight: 1.7,
           marginBottom: 14,
@@ -388,7 +442,7 @@ function MiniProjectCard({ title, blurb, grad }) {
           <span
             key={s}
             style={{
-              color: "#E7EBFA",
+              color: C.text,
               background: "rgba(255,255,255,0.07)",
               border: `1px solid ${C.border}`,
               padding: "3px 9px",
@@ -404,9 +458,13 @@ function MiniProjectCard({ title, blurb, grad }) {
 }
 
 /* ---------------- Certification card ---------------- */
-function CertCard({ title, issuer, credId, url, grad }) {
+function CertCard({ title, issuer, credId, url, grad, C }) {
   return (
-    <GlassCard className="p-6 h-full flex flex-col" glow="rgba(34,211,238,0.1)">
+    <GlassCard
+      C={C}
+      className="p-6 h-full flex flex-col"
+      glow="rgba(34,211,238,0.1)"
+    >
       <div className="flex items-start justify-between gap-3 mb-4">
         <div
           className="flex items-center justify-center shrink-0"
@@ -419,7 +477,7 @@ function CertCard({ title, issuer, credId, url, grad }) {
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 10.5,
             fontWeight: 600,
-            color: "#C7CEE6",
+            color: C.muted,
             background: "rgba(255,255,255,0.07)",
             border: `1px solid ${C.border}`,
             padding: "4px 10px",
@@ -435,7 +493,7 @@ function CertCard({ title, issuer, credId, url, grad }) {
           fontFamily: "'Space Grotesk', sans-serif",
           fontSize: 16.5,
           fontWeight: 700,
-          color: "#FFFFFF",
+          color: C.text,
           lineHeight: 1.35,
           marginBottom: 10,
           flexGrow: 1,
@@ -447,7 +505,7 @@ function CertCard({ title, issuer, credId, url, grad }) {
         style={{
           fontFamily: "'JetBrains Mono', monospace",
           fontSize: 11,
-          color: "#9AA3C4",
+          color: C.mutedDark,
           marginBottom: 14,
         }}
       >
@@ -474,6 +532,157 @@ function CertCard({ title, issuer, credId, url, grad }) {
   );
 }
 
+function AnimatedCounter({
+  end,
+  duration = 1800,
+  suffix = "",
+  decimals = 0,
+  C,
+}) {
+  const [count, setCount] = useState(0);
+  const [ref, visible] = useReveal();
+
+  useEffect(() => {
+    if (!visible) return;
+
+    let start = 0;
+    const increment = end / (duration / 16);
+
+    const timer = setInterval(() => {
+      start += increment;
+
+      if (start >= end) {
+        start = end;
+        clearInterval(timer);
+      }
+
+      setCount(start);
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [visible, end, duration]);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        className="grad-text"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 24,
+          fontWeight: 800,
+          display: "inline-flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minWidth: "80px",
+          fontVariantNumeric: "tabular-nums",
+          letterSpacing: "-0.03em",
+        }}
+      >
+        <span>{count.toFixed(decimals)}</span>
+
+        {suffix && (
+          <span
+            style={{
+              marginLeft: "-1px",
+            }}
+          >
+            {suffix}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Particles() {
+  const particles = Array.from({ length: 40 });
+
+  return (
+    <div
+      className="particles-container"
+      style={{
+        position: "fixed",
+        inset: 0,
+        overflow: "hidden",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}
+    >
+      {particles.map((_, i) => {
+        const size = Math.random() * 5 + 1;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 18 + 18;
+        const delay = Math.random() * 10;
+
+        return (
+          <span
+            key={i}
+            className="particle"
+            style={{
+              width: size,
+              height: size,
+              left: `${left}%`,
+              animationDuration: `${duration}s`,
+              animationDelay: `${delay}s`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function MagneticButton({ children, className = "", style = {}, ...props }) {
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  const handleMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    setPosition({
+      x: x * 0.22,
+      y: y * 0.22,
+    });
+  };
+
+  const reset = () => {
+    setPosition({
+      x: 0,
+      y: 0,
+    });
+  };
+
+  return (
+    <a
+      {...props}
+      className={className}
+      onMouseMove={handleMove}
+      onMouseLeave={reset}
+      style={{
+        ...style,
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        transition: "transform .18s ease-out",
+        display: "inline-flex",
+      }}
+    >
+      {children}
+    </a>
+  );
+}
+
 export default function Portfolio() {
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -481,10 +690,46 @@ export default function Portfolio() {
   const [progress, setProgress] = useState(0);
   const [contactVisible, setContactVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
+  const [mousePosition, setMousePosition] = useState({
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  });
+
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") !== "light";
+  });
+  const C = darkMode ? DARK : LIGHT;
+
+  useEffect(() => {
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   useEffect(() => {
     const t = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(t);
+  }, []);
+  useEffect(() => {
+    let progress = 0;
+
+    const timer = setInterval(() => {
+      progress += Math.floor(Math.random() * 8) + 3;
+
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(timer);
+
+        setTimeout(() => {
+          setLoading(false);
+        }, 400);
+      }
+
+      setLoadingProgress(progress);
+    }, 70);
+
+    return () => clearInterval(timer);
   }, []);
 
   const navLinks = [
@@ -526,6 +771,21 @@ export default function Portfolio() {
     sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: e.clientX,
+        y: e.clientY,
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   // hide the floating contact button once the Contact section is on screen
@@ -577,6 +837,83 @@ export default function Portfolio() {
       ],
     },
   ];
+  if (loading) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100vh",
+          background: "#05060C",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            width: "420px",
+            maxWidth: "90%",
+            textAlign: "center",
+          }}
+        >
+          <h1
+            style={{
+              color: "#fff",
+              fontSize: "38px",
+              fontWeight: "800",
+              marginBottom: "10px",
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
+          >
+            Loading Portfolio...
+          </h1>
+
+          <p
+            style={{
+              color: "#8B5CF6",
+              marginBottom: "35px",
+              fontSize: "15px",
+            }}
+          >
+            Harish Aravind Kumar
+          </p>
+
+          <div
+            style={{
+              width: "100%",
+              height: "8px",
+              background: "rgba(255,255,255,.08)",
+              borderRadius: "20px",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                width: `${loadingProgress}%`,
+                height: "100%",
+                borderRadius: "20px",
+                transition: "width .15s linear",
+                background: "linear-gradient(90deg,#8B5CF6,#22D3EE,#F472B6)",
+                boxShadow: "0 0 25px #8B5CF6",
+              }}
+            />
+          </div>
+
+          <h2
+            style={{
+              color: "#fff",
+              marginTop: "25px",
+              fontSize: "28px",
+              fontFamily: "'JetBrains Mono', monospace",
+            }}
+          >
+            {loadingProgress}%
+          </h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -586,8 +923,10 @@ export default function Portfolio() {
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
         position: "relative",
-        opacity: mounted ? 1 : 0,
-        transition: "opacity 0.6s ease",
+        // opacity: mounted ? 1 : 0,
+        // transition: "opacity 0.6s ease",
+        opacity: loading ? 0 : mounted ? 1 : 0,
+        transition: "all .45s ease",
       }}
     >
       <style>{`
@@ -621,7 +960,7 @@ export default function Portfolio() {
         .orb3 { animation: orbFloat3 12s ease-in-out infinite; }
 
         .glass-card { transition:transform .5s cubic-bezier(.22,1,.36,1), border-color .35s ease, box-shadow .35s ease, background .35s ease; }
-        .glass-hover:hover { transform: translateY(-6px); border-color: ${C.borderHi}; background: ${C.glassHi}; box-shadow: 0 30px 70px -20px rgba(139,92,246,0.28), 0 10px 30px -12px rgba(0,0,0,0.6) !important; }
+        .glass-hover:hover { transform: translateY(-8px) scale(1.015); border-color: ${C.borderHi}; background: ${C.glassHi}; box-shadow: 0 30px 70px -20px rgba(139,92,246,0.28), 0 10px 30px -12px rgba(0,0,0,0.6) !important; }
 
         .nav-link { position: relative; color: ${C.muted}; font-size: 14px; font-weight: 500; padding: 8px 4px; transition: color .25s ease; cursor: pointer; }
         .nav-link::after { content: ''; position: absolute; left: 0; bottom: 0; width: 0%; height: 2px; border-radius: 2px; background: ${GRAD}; transition: width .3s cubic-bezier(.16,1,.3,1); }
@@ -631,12 +970,18 @@ export default function Portfolio() {
         .nav-link.active::after { width: 100%; }
 
         .cta-primary { transition: transform .25s ease, box-shadow .25s ease; background-size: 200% 200%; }
-        .cta-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 16px 40px -14px rgba(139,92,246,0.6); }
-        .cta-ghost { transition: border-color .25s ease, background .25s ease, transform .25s ease; }
-        .cta-ghost:hover { border-color: ${C.borderHi}; background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+.cta-primary:hover{
+
+    transform:translateY(-2px) scale(1.06);
+
+    box-shadow:
+    0 18px 45px rgba(139,92,246,.45);
+
+}        .cta-ghost { transition: border-color .25s ease, background .25s ease, transform .25s ease; }
+        .cta-ghost:hover { border-color:rgba(255,255,255,.35); background: rgba(255,255,255,0.06); transform: translateY(-2px); }
 
         .skill-chip { transition: transform .25s ease, border-color .25s ease, background .25s ease; cursor: default; }
-        .skill-chip:hover { transform: translateY(-3px) scale(1.03); border-color: ${C.borderHi}; }
+        .skill-chip:hover { transform: translateY(-3px) scale(1.03); border-color:rgba(255,255,255,.35); }
 
 @keyframes mobileMenuOpen {
   from {
@@ -736,7 +1081,239 @@ export default function Portfolio() {
 .mobile-panel a:hover::after{
     width:100%;
 }
+
+@keyframes moveGrid {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(60px, 60px);
+  }
+}
+
+.moving-grid {
+  position: fixed;
+  inset: -60px;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+
+  background-size: 60px 60px;
+
+  animation: moveGrid 18s linear infinite;
+
+  opacity: .45;
+}
+
+@keyframes beamMove1 {
+  0% {
+    transform: translateX(-25%) rotate(-18deg);
+  }
+  100% {
+    transform: translateX(25%) rotate(-18deg);
+  }
+}
+
+@keyframes beamMove2 {
+  0% {
+    transform: translateX(20%) rotate(15deg);
+  }
+  100% {
+    transform: translateX(-20%) rotate(15deg);
+  }
+}
+
+@keyframes beamMove3 {
+  0% {
+    transform: translateY(-20%) rotate(-8deg);
+  }
+  100% {
+    transform: translateY(20%) rotate(-8deg);
+  }
+}
+
+.beam{
+    position:absolute;
+    border-radius:999px;
+    filter:blur(150px);
+    opacity:.12;
+}
+
+.beam1{
+    animation:beamMove1 18s ease-in-out infinite alternate;
+}
+
+.beam2{
+    animation:beamMove2 22s ease-in-out infinite alternate;
+}
+
+.beam3{
+    animation:beamMove3 26s ease-in-out infinite alternate;
+}
+
+@keyframes particleFloat {
+
+    0%{
+        transform:translateY(100vh) scale(.2);
+        opacity:0;
+    }
+
+    10%{
+        opacity:.25;
+    }
+
+    50%{
+        opacity:.45;
+    }
+
+    100%{
+        transform:translateY(-150px) scale(1);
+        opacity:0;
+    }
+
+}
+
+.particle{
+
+    position:absolute;
+
+    bottom:-20px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        #8B5CF6,
+        #22D3EE,
+        #F472B6
+    );
+
+filter:blur(.8px);
+
+box-shadow:
+0 0 10px rgba(139,92,246,.45),
+0 0 18px rgba(34,211,238,.35);
+
+    animation-name:particleFloat;
+
+    animation-timing-function:linear;
+
+    animation-iteration-count:infinite;
+
+}
+
+.glass-spotlight{
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    transition:
+        background .08s linear;
+
+    z-index:0;
+
+}
+
+.glass-card>*{
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+*{
+
+transition:
+background .35s ease,
+color .35s ease,
+border-color .35s ease,
+box-shadow .35s ease;
+
+}
       `}</style>
+
+      <div
+        style={{
+          position: "fixed",
+          left: mousePosition.x - 175,
+          top: mousePosition.y - 175,
+          width: 350,
+          height: 350,
+          borderRadius: "50%",
+          pointerEvents: "none",
+          zIndex: 0,
+          background:
+            "radial-gradient(circle, rgba(139,92,246,0.20) 0%, rgba(139,92,246,0.12) 35%, rgba(139,92,246,0.04) 60%, transparent 80%)",
+          filter: "blur(55px)",
+          transition: "left .12s ease-out, top .12s ease-out",
+          mixBlendMode: "screen",
+        }}
+      />
+      <div
+        className="moving-grid"
+        style={{
+          backgroundImage: darkMode
+            ? `
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px)
+      `
+            : `
+      linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)
+      `,
+        }}
+      />
+
+      <Particles />
+
+      {/* ---------- Gradient Beams ---------- */}
+
+      <div
+        className="fixed inset-0 pointer-events-none overflow-hidden"
+        style={{
+          zIndex: 0,
+        }}
+      >
+        <div
+          className="beam beam1"
+          style={{
+            width: 650,
+            height: 220,
+            background: "linear-gradient(90deg,#8B5CF6,#22D3EE)",
+            top: "8%",
+            left: "-12%",
+          }}
+        />
+
+        <div
+          className="beam beam2"
+          style={{
+            width: 700,
+            height: 220,
+            background: "linear-gradient(90deg,#22D3EE,#8B5CF6)",
+            bottom: "15%",
+            right: "-15%",
+          }}
+        />
+
+        <div
+          className="beam beam3"
+          style={{
+            width: 550,
+            height: 180,
+            background: "linear-gradient(90deg,#F472B6,#8B5CF6)",
+            top: "45%",
+            left: "30%",
+          }}
+        />
+      </div>
 
       {/* ---------------- AMBIENT GRADIENT ORBS (fixed backdrop) ---------------- */}
       <div
@@ -752,7 +1329,7 @@ export default function Portfolio() {
             height: 480,
             borderRadius: "50%",
             background: C.violet,
-            opacity: 0.28,
+            opacity: darkMode ? 0.28 : 0.12,
             filter: "blur(120px)",
           }}
         />
@@ -795,7 +1372,11 @@ export default function Portfolio() {
         <header
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
           style={{
-            background: scrolled ? "rgba(5,6,12,0.72)" : "transparent",
+            background: scrolled
+              ? darkMode
+                ? "rgba(5,6,12,.72)"
+                : "rgba(255,255,255,.82)"
+              : "transparent",
             backdropFilter: scrolled ? "blur(18px)" : "none",
             WebkitBackdropFilter: scrolled ? "blur(18px)" : "none",
             borderBottom: scrolled
@@ -857,6 +1438,36 @@ export default function Portfolio() {
             >
               Let's talk <ArrowUpRight size={14} />
             </a>
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              style={{
+                width: 46,
+                height: 46,
+                marginLeft: 12,
+                borderRadius: "50%",
+                border: `1px solid ${C.border}`,
+                background: C.glass,
+                color: C.text,
+                cursor: "pointer",
+                backdropFilter: "blur(18px)",
+
+                // Add these
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 0,
+                lineHeight: 0,
+
+                // Optional
+                transition: "all .3s ease",
+              }}
+            >
+              {darkMode ? (
+                <Sun size={20} strokeWidth={2} />
+              ) : (
+                <Moon size={20} strokeWidth={2} />
+              )}
+            </button>
 
             <button
               type="button"
@@ -890,7 +1501,9 @@ export default function Portfolio() {
             <div
               className="mobile-panel md:hidden px-6 pb-6 flex flex-col gap-1"
               style={{
-                background: "rgba(5,6,12,0.96)",
+                background: darkMode
+                  ? "rgba(5,6,12,.96)"
+                  : "rgba(255,255,255,.96)",
                 backdropFilter: "blur(30px)",
                 WebkitBackdropFilter: "blur(30px)",
                 borderTop: `1px solid ${C.border}`,
@@ -933,11 +1546,11 @@ export default function Portfolio() {
                   fontSize: 14,
                   padding: "13px 18px",
                   borderRadius: 999,
-                  marginTop: 16,
+                  flex: 1,
                 }}
-                onClick={() => setNavOpen(false)}
               >
-                <Mail size={15} /> Let's talk
+                <Mail size={15} />
+                Let's talk
               </a>
             </div>
           )}
@@ -949,7 +1562,7 @@ export default function Portfolio() {
           className="relative max-w-5xl mx-auto px-6 md:px-8 pt-24 pb-16 md:pt-32 md:pb-20 text-center flex flex-col items-center"
         >
           <div className="hero-anim-1">
-            <Eyebrow>React JS Developer · Chennai, India</Eyebrow>
+            <Eyebrow C={C}>React JS Developer . Chennai, India</Eyebrow>
           </div>
           <h1
             className="hero-anim-2"
@@ -985,7 +1598,7 @@ export default function Portfolio() {
             interfaces and delivering high-quality web applications.
           </p>
           <div className="hero-anim-4 flex flex-wrap items-center justify-center gap-4 mt-9">
-            <a
+            <MagneticButton
               href="#projects"
               onClick={scrollTo("projects")}
               className="cta-primary"
@@ -999,8 +1612,8 @@ export default function Portfolio() {
               }}
             >
               View projects
-            </a>
-            <a
+            </MagneticButton>
+            <MagneticButton
               href="#contact"
               onClick={scrollTo("contact")}
               className="cta-ghost"
@@ -1015,39 +1628,73 @@ export default function Portfolio() {
               }}
             >
               Get in touch
-            </a>
+            </MagneticButton>
           </div>
 
           <div className="hero-anim-4 mt-14">
             <GlassCard
+              C={C}
               hover={false}
-              className="inline-flex flex-wrap items-center justify-center gap-x-10 gap-y-6 px-8 py-6"
+              className="px-8 py-6 w-full"
               style={{ borderRadius: 20 }}
             >
-              {[
-                ["12+", "Projects Delivered"],
-                ["8+", "REST APIs Integrated"],
-                ["100%", "Responsive Design"],
-                ["92.60%", "MCA • SRM Institute"],
-              ].map(([n, l]) => (
-                <div key={l} className="text-center">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+                {[
+                  {
+                    end: 12,
+                    suffix: "+",
+                    label: "Projects Delivered",
+                  },
+                  {
+                    end: 8,
+                    suffix: "+",
+                    label: "REST APIs Integrated",
+                  },
+                  {
+                    end: 100,
+                    suffix: "%",
+                    label: "Responsive Design",
+                  },
+                  {
+                    end: 92.6,
+                    suffix: "%",
+                    decimals: 1,
+                    label: "MCA • SRM Institute",
+                  },
+                ].map((item) => (
                   <div
-                    className="grad-text"
+                    key={item.label}
+                    className="flex flex-col items-center justify-center text-center"
                     style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: 24,
-                      fontWeight: 800,
+                      //     display: "flex",
+                      //     flexDirection: "column",
+                      //     alignItems: "center",
+                      // minWidth:"120px",
+                      width: "100%",
+                      textAlign: "center",
                     }}
                   >
-                    {n}
+                    <AnimatedCounter
+                      C={C}
+                      end={item.end}
+                      suffix={item.suffix}
+                      decimals={item.decimals || 0}
+                    />
+
+                    <div
+                      style={{
+                        color: C.muted,
+                        fontSize: 12.5,
+                        marginTop: 3,
+                        width: "100%",
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.label}
+                    </div>
                   </div>
-                  <div
-                    style={{ color: C.mutedDark, fontSize: 12.5, marginTop: 3 }}
-                  >
-                    {l}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </GlassCard>
           </div>
         </section>
@@ -1061,10 +1708,15 @@ export default function Portfolio() {
             <SectionTitle
               kicker="Work Experience"
               title="Where the code goes live"
+              C={C}
             />
           </Reveal>
           <Reveal delay={0.08}>
-            <GlassCard glow="rgba(34,211,238,0.15)" className="p-9 md:p-12">
+            <GlassCard
+              C={C}
+              glow="rgba(34,211,238,0.15)"
+              className="p-9 md:p-12"
+            >
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-7">
                 <div>
                   <h3
@@ -1108,7 +1760,7 @@ export default function Portfolio() {
                     />
                     <span
                       style={{
-                        color: "#D3D9EC",
+                        color: C.text,
                         fontSize: 14,
                         lineHeight: 1.7,
                       }}
@@ -1132,11 +1784,13 @@ export default function Portfolio() {
               kicker="Selected Work"
               title="Products, dashboards, and the sites behind them"
               grad={GRAD2}
+              C={C}
             />
           </Reveal>
           <div className="flex flex-col gap-8">
             <Reveal delay={0.05}>
               <TicketCard
+                C={C}
                 code="TXN · REDBUS-2026-01"
                 title="RedBus Bus Booking System"
                 stack={["React.js", "Axios", "Express.js"]}
@@ -1152,6 +1806,7 @@ export default function Portfolio() {
             </Reveal>
             <Reveal delay={0.12}>
               <TicketCard
+                C={C}
                 code="TXN · INDIFI-2026-02"
                 title="Indifi — Loan Application System"
                 stack={["React.js", "Axios", "Express.js"]}
@@ -1167,6 +1822,7 @@ export default function Portfolio() {
             </Reveal>
             <Reveal delay={0.19}>
               <TicketCard
+                C={C}
                 code="TXN · CCCS-2026-03"
                 title="Credit Card Collection System"
                 stack={["React.js", "REST APIs", "jsPDF"]}
@@ -1182,6 +1838,7 @@ export default function Portfolio() {
             </Reveal>
             <Reveal delay={0.26}>
               <TicketCard
+                C={C}
                 code="TXN · BAMS-2026-04"
                 title="Bank Account Management System"
                 stack={["React.js", "Node.js", "Express.js", "REST APIs"]}
@@ -1278,6 +1935,7 @@ export default function Portfolio() {
               ].map((p, i) => (
                 <Reveal key={p.title} delay={(i % 3) * 0.08}>
                   <MiniProjectCard
+                    C={C}
                     title={p.title}
                     blurb={p.blurb}
                     grad={p.grad}
@@ -1294,7 +1952,7 @@ export default function Portfolio() {
           className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
         >
           <Reveal>
-            <SectionTitle kicker="Toolkit" title="What's in the stack" />
+            <SectionTitle kicker="Toolkit" title="What's in the stack" C={C} />
           </Reveal>
           <div className="grid md:grid-cols-2 gap-6">
             {skillGroups.map((g, gi) => (
@@ -1303,7 +1961,7 @@ export default function Portfolio() {
                 delay={gi * 0.07}
                 variant={gi % 2 === 0 ? "left" : "right"}
               >
-                <GlassCard className="p-7">
+                <GlassCard C={C} className="p-7">
                   <div
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
@@ -1350,7 +2008,12 @@ export default function Portfolio() {
           className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
         >
           <Reveal>
-            <SectionTitle kicker="Education" title="Foundations" grad={GRAD2} />
+            <SectionTitle
+              kicker="Education"
+              title="Foundations"
+              grad={GRAD2}
+              C={C}
+            />
           </Reveal>
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -1375,12 +2038,12 @@ export default function Portfolio() {
               },
             ].map((e, i) => (
               <Reveal key={e.school} delay={i * 0.1}>
-                <GlassCard className="p-7 h-full flex flex-col">
+                <GlassCard C={C} className="p-7 h-full flex flex-col">
                   <div
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: 12,
-                      color: C.mutedDark,
+                      color: C.muted,
                     }}
                   >
                     {e.period}
@@ -1425,6 +2088,7 @@ export default function Portfolio() {
             <SectionTitle
               kicker="Certifications"
               title="Backed by verified credentials"
+              C={C}
             />
           </Reveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1481,6 +2145,7 @@ export default function Portfolio() {
             ].map((c, i) => (
               <Reveal key={c.credId} delay={(i % 3) * 0.08}>
                 <CertCard
+                  C={C}
                   title={c.title}
                   issuer={c.issuer}
                   credId={c.credId}
@@ -1499,6 +2164,7 @@ export default function Portfolio() {
         >
           <Reveal>
             <GlassCard
+              C={C}
               hover={false}
               glow="rgba(139,92,246,0.25)"
               className="p-10 md:p-16 text-center"
@@ -1512,7 +2178,7 @@ export default function Portfolio() {
               />
               <div className="relative">
                 <div className="flex justify-center">
-                  <Eyebrow>Contact</Eyebrow>
+                  <Eyebrow C={C}>Contact</Eyebrow>
                 </div>
                 <h2
                   style={{
@@ -1524,7 +2190,7 @@ export default function Portfolio() {
                     margin: "0 auto",
                   }}
                 >
-                  Building your next release —{" "}
+                  Building your next release{" "}
                   <span className="grad-text">let's talk about it.</span>
                 </h2>
                 <p
@@ -1537,11 +2203,11 @@ export default function Portfolio() {
                     marginRight: "auto",
                   }}
                 >
-                  Open to React.js frontend and fintech-focused roles. Reach out
+                  Open to React.js frontend and FullStack roles. Reach out
                   directly, no forms.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
-                  <a
+                  <MagneticButton
                     href="https://mail.google.com/mail/?view=cm&fs=1&to=harisharavind0309@gmail.com"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1556,8 +2222,8 @@ export default function Portfolio() {
                     }}
                   >
                     <Mail size={16} /> harisharavind0309@gmail.com
-                  </a>
-                  <a
+                  </MagneticButton>
+                  <MagneticButton
                     href="tel:+919566843200"
                     className="cta-ghost flex items-center gap-2"
                     style={{
@@ -1571,7 +2237,7 @@ export default function Portfolio() {
                     }}
                   >
                     <Phone size={16} /> +91 95668 43200
-                  </a>
+                  </MagneticButton>
                 </div>
               </div>
             </GlassCard>
