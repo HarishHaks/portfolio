@@ -15,6 +15,31 @@ import React, { useEffect, useRef, useState } from "react";
 // } from "lucide-react";
 
 import {
+  FaReact,
+  FaHtml5,
+  FaCss3Alt,
+  FaJs,
+  FaNodeJs,
+  FaGitAlt,
+  FaGithub,
+  FaBootstrap,
+  FaFigma,
+} from "react-icons/fa";
+
+import {
+  SiTailwindcss,
+  SiExpress,
+  SiMongodb,
+  SiMysql,
+  SiFirebase,
+  SiRedux,
+  SiPostman,
+  SiGoogleanalytics,
+  SiGoogleads,
+  SiMeta,
+} from "react-icons/si";
+
+import {
   Mail,
   Phone,
   // Linkedin,
@@ -683,6 +708,34 @@ function MagneticButton({ children, className = "", style = {}, ...props }) {
   );
 }
 
+const skillIcons = {
+  "React.js": <FaReact color="#61DAFB" />,
+  React: <FaReact color="#61DAFB" />,
+  JavaScript: <FaJs color="#F7DF1E" />,
+  HTML5: <FaHtml5 color="#E34F26" />,
+  HTML: <FaHtml5 color="#E34F26" />,
+  CSS3: <FaCss3Alt color="#1572B6" />,
+  CSS: <FaCss3Alt color="#1572B6" />,
+  Bootstrap: <FaBootstrap color="#7952B3" />,
+  Tailwind: <SiTailwindcss color="#06B6D4" />,
+  "Tailwind CSS": <SiTailwindcss color="#06B6D4" />,
+  Node: <FaNodeJs color="#68A063" />,
+  "Node.js": <FaNodeJs color="#68A063" />,
+  Express: <SiExpress />,
+  MongoDB: <SiMongodb color="#47A248" />,
+  MySQL: <SiMysql color="#00758F" />,
+  Firebase: <SiFirebase color="#FFCA28" />,
+  Redux: <SiRedux color="#764ABC" />,
+  Git: <FaGitAlt color="#F05032" />,
+  GitHub: <FaGithub />,
+  Postman: <SiPostman color="#FF6C37" />,
+  Figma: <FaFigma color="#F24E1E" />,
+  "Google Ads": <SiGoogleads color="#4285F4" />,
+  GA4: <SiGoogleanalytics color="#F9AB00" />,
+  "Google Analytics": <SiGoogleanalytics color="#F9AB00" />,
+  Meta: <SiMeta color="#1877F2" />,
+};
+
 export default function Portfolio() {
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -866,7 +919,7 @@ export default function Portfolio() {
               fontFamily: "'Space Grotesk', sans-serif",
             }}
           >
-            Loading Portfolio...
+            Initializing Experience...
           </h1>
 
           <p
@@ -876,7 +929,7 @@ export default function Portfolio() {
               fontSize: "15px",
             }}
           >
-            Harish Aravind Kumar
+            React Portfolio v2.0
           </p>
 
           <div
@@ -945,8 +998,21 @@ export default function Portfolio() {
         @keyframes orbFloat3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(20px,20px) scale(1.1); } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes badgeBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        @keyframes fabBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .badge-bob { animation: badgeBob 3.2s ease-in-out infinite; }
+@keyframes fabBob {
+
+  0%,100%{
+      transform:translateY(0);
+  }
+
+  50%{
+      transform:translateY(-6px);
+  }
+
+}
+
+.fab-float{
+    animation:fabBob 3.5s ease-in-out infinite;
+}        .badge-bob { animation: badgeBob 3.2s ease-in-out infinite; }
         .fab-float { animation: fabBob 3.6s ease-in-out infinite; }
         .grain { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/></svg>"); }
 
@@ -1237,6 +1303,16 @@ border-color .35s ease,
 box-shadow .35s ease;
 
 }
+
+.skill-chip{
+    transition:all .35s cubic-bezier(.22,1,.36,1);
+}
+
+.skill-chip:hover{
+    transform:translateY(-4px) scale(1.04);
+    box-shadow:
+        0 12px 28px rgba(139,92,246,.20);
+}
       `}</style>
 
       <div
@@ -1406,7 +1482,24 @@ box-shadow .35s ease;
                 letterSpacing: "-0.02em",
               }}
             >
-              HAK<span className="grad-text">.</span>
+              <span
+                style={{
+                  fontWeight: 900,
+                  letterSpacing: "0.08em",
+                  fontSize: "2rem",
+                  fontFamily: "'Space Grotesk', sans-serif",
+                }}
+              >
+                HAK
+              </span>
+              <span
+                className="grad-text"
+                style={{
+                  fontWeight: 900,
+                }}
+              >
+                DEV
+              </span>{" "}
             </a>
 
             <nav className="hidden md:flex items-center gap-9">
@@ -1423,7 +1516,7 @@ box-shadow .35s ease;
             </nav>
 
             <a
-              href="https://mail.google.com/mail/?view=cm&fs=1&to=harisharavind0309@gmail.com"
+              href="mailto:harisharavind0309@gmail.com"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden md:inline-flex items-center gap-2 cta-primary"
@@ -1441,6 +1534,8 @@ box-shadow .35s ease;
             <button
               onClick={() => setDarkMode(!darkMode)}
               style={{
+                display: window.innerWidth < 768 ? "none" : "flex",
+
                 width: 46,
                 height: 46,
                 marginLeft: 12,
@@ -1450,23 +1545,17 @@ box-shadow .35s ease;
                 color: C.text,
                 cursor: "pointer",
                 backdropFilter: "blur(18px)",
+                WebkitBackdropFilter: "blur(18px)",
 
-                // Add these
-                display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 padding: 0,
                 lineHeight: 0,
 
-                // Optional
                 transition: "all .3s ease",
               }}
             >
-              {darkMode ? (
-                <Sun size={20} strokeWidth={2} />
-              ) : (
-                <Moon size={20} strokeWidth={2} />
-              )}
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
 
             <button
@@ -1535,7 +1624,7 @@ box-shadow .35s ease;
                 </a>
               ))}
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=harisharavind0309@gmail.com"
+                href="mailto:harisharavind0309@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cta-primary flex items-center justify-center gap-2"
@@ -1984,15 +2073,29 @@ box-shadow .35s ease;
                         key={s}
                         className="skill-chip"
                         style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
                           border: `1px solid ${C.border}`,
                           color: C.text,
                           fontSize: 13.5,
-                          padding: "8px 14px",
+                          padding: "10px 16px",
                           borderRadius: 999,
-                          background: "rgba(255,255,255,0.04)",
+                          background: "rgba(255,255,255,0.05)",
+                          transition: "all .3s ease",
                         }}
                       >
-                        {s}
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            fontSize: 18,
+                          }}
+                        >
+                          {skillIcons[s] || "⚡"}
+                        </span>
+
+                        <span>{s}</span>
                       </span>
                     ))}
                   </div>
@@ -2208,7 +2311,7 @@ box-shadow .35s ease;
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
                   <MagneticButton
-                    href="https://mail.google.com/mail/?view=cm&fs=1&to=harisharavind0309@gmail.com"
+                    href="mailto:harisharavind0309@gmail.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cta-primary flex items-center gap-2"
@@ -2366,6 +2469,51 @@ className="cta-ghost footer-icon flex items-center justify-center"
       </div>
 
       {/* ---------------- FLOATING CONTACT FAB ---------------- */}
+
+      {/* Floating Theme Button (Mobile Only) */}
+      <div
+        className="fab-float fixed md:hidden"
+        style={{
+          bottom: 24,
+          left: 10,
+          zIndex: 60,
+        }}
+      >
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          aria-label="Toggle Theme"
+          style={{
+            width: 58,
+            height: 58,
+            borderRadius: "50%",
+            border: `1px solid ${C.border}`,
+            background: C.glass,
+            color: C.text,
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow:
+              "0 14px 35px rgba(0,0,0,.35), 0 0 18px rgba(139,92,246,.18)",
+            transition: "all .35s cubic-bezier(.22,1,.36,1)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0) scale(1)";
+          }}
+        >
+          {darkMode ? (
+            <Sun size={22} strokeWidth={2} />
+          ) : (
+            <Moon size={22} strokeWidth={2} />
+          )}
+        </button>
+      </div>
+
       <div
         className="fab-float fixed"
         style={{
@@ -2381,7 +2529,7 @@ className="cta-ghost footer-icon flex items-center justify-center"
         }}
       >
         <a
-          href="https://mail.google.com/mail/?view=cm&fs=1&to=harisharavind0309@gmail.com"
+          href="mailto:harisharavind0309@gmail.com"
           target="_blank"
           rel="noopener noreferrer"
           className="cta-primary flex items-center gap-2"
@@ -2396,7 +2544,7 @@ className="cta-ghost footer-icon flex items-center justify-center"
             cursor: "pointer",
           }}
         >
-          <Mail size={16} />
+          <Mail size={22} />
           <span className="hidden sm:inline">Let's talk</span>
         </a>
       </div>
