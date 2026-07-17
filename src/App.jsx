@@ -47,6 +47,8 @@ import {
   Moon,
 } from "lucide-react";
 
+import { Helmet } from "react-helmet-async";
+
 /* ---------------------------------------------------------
    DESIGN TOKENS — Premium Dark Glass
    bg        #05060C  – void background
@@ -208,7 +210,6 @@ const GlassCard = memo(function GlassCard({
   glow,
   C = DARK,
 }) {
-
   const handleMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
 
@@ -1250,31 +1251,48 @@ export default function Portfolio() {
   }
 
   return (
-    <div
-      style={{
-        background:
-          isMobile && darkMode
-            ? `
+    <>
+      <Helmet>
+        <title>Harish Aravind | React.js Developer</title>
+
+        <meta
+          name="description"
+          content="React.js Developer specializing in React.js, JavaScript, REST API Integration, Responsive Web Applications, Bootstrap, HTML5, CSS3 and modern frontend development."
+        />
+
+        <meta
+          name="keywords"
+          content="Harish Aravind, React Developer, Frontend Developer, JavaScript Developer, React Portfolio"
+        />
+
+        <meta name="author" content="Harish Aravind Kumar N S" />
+      </Helmet>
+
+      <div
+        style={{
+          background:
+            isMobile && darkMode
+              ? `
         radial-gradient(circle at 20% 15%, rgba(139,92,246,.14), transparent 45%),
         radial-gradient(circle at 85% 30%, rgba(34,211,238,.10), transparent 45%),
         radial-gradient(circle at 50% 100%, rgba(244,114,182,.08), transparent 50%),
         ${C.bg}
       `
-            : C.bg,
+              : C.bg,
 
-        color: C.text,
-        minHeight: "100vh",
-        fontFamily: "'Inter', sans-serif",
-        position: "relative",
-        opacity: loading ? 0 : mounted ? 1 : 0,
-        transition: `
+          color: C.text,
+          minHeight: "100vh",
+          fontFamily: "'Inter', sans-serif",
+          position: "relative",
+          opacity: loading ? 0 : mounted ? 1 : 0,
+          transition: `
 background-color .35s ease,
 background .35s ease,
 color .35s ease,
 `,
-      }}
-    >
-      <style>{`
+        }}
+      >
+        <style>{`
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         section, #top { scroll-margin-top: 90px; }
@@ -1763,1085 +1781,1094 @@ body.light{
     color:#111827;
 }
       `}</style>
-      {!isMobile && (
-        <div
-          ref={spotlightRef}
-          style={{
-            position: "fixed",
-            left: 0,
-            top: 0,
-            width: 350,
-            height: 350,
-            borderRadius: "50%",
-            pointerEvents: "none",
-            zIndex: 0,
-            background:
-              "radial-gradient(circle, rgba(139,92,246,0.20) 0%, rgba(139,92,246,0.12) 35%, rgba(139,92,246,0.04) 60%, transparent 80%)",
-            filter: "blur(45px)",
-            mixBlendMode: "screen",
-          }}
-        />
-      )}
-      {!isMobile && (
-        <div
-          className="moving-grid"
-          style={{
-            backgroundImage: darkMode
-              ? `
+        {!isMobile && (
+          <div
+            ref={spotlightRef}
+            style={{
+              position: "fixed",
+              left: 0,
+              top: 0,
+              width: 350,
+              height: 350,
+              borderRadius: "50%",
+              pointerEvents: "none",
+              zIndex: 0,
+              background:
+                "radial-gradient(circle, rgba(139,92,246,0.20) 0%, rgba(139,92,246,0.12) 35%, rgba(139,92,246,0.04) 60%, transparent 80%)",
+              filter: "blur(45px)",
+              mixBlendMode: "screen",
+            }}
+          />
+        )}
+        {!isMobile && (
+          <div
+            className="moving-grid"
+            style={{
+              backgroundImage: darkMode
+                ? `
       linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px)
       `
-              : `
+                : `
       linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)
       `,
-          }}
-        />
-      )}
-      {!isMobile && <Particles />}
-      {!isMobile && (
-        <>
-          {/* ---------- Gradient Beams ---------- */}
-
-          <div
-            className="fixed inset-0 overflow-hidden"
-            style={{
-              zIndex: 0,
-
-              pointerEvents: "none",
-
-              userSelect: "none",
-            }}
-          >
-            <div
-              className="beam beam1"
-              style={{
-                width: 650,
-                height: 220,
-                background: "linear-gradient(90deg,#8B5CF6,#22D3EE)",
-                top: "8%",
-                left: "-12%",
-              }}
-            />
-
-            <div
-              className="beam beam2"
-              style={{
-                width: 700,
-                height: 220,
-                background: "linear-gradient(90deg,#22D3EE,#8B5CF6)",
-                bottom: "15%",
-                right: "-15%",
-              }}
-            />
-
-            <div
-              className="beam beam3"
-              style={{
-                width: 550,
-                height: 180,
-                background: "linear-gradient(90deg,#F472B6,#8B5CF6)",
-                top: "45%",
-                left: "30%",
-              }}
-            />
-          </div>
-        </>
-      )}
-
-      {!isMobile && (
-        <>
-          {/* ---------------- AMBIENT GRADIENT ORBS (fixed backdrop) ---------------- */}
-          <div
-            className="fixed inset-0 overflow-hidden"
-            style={{
-              zIndex: 0,
-              pointerEvents: "none",
-              userSelect: "none",
-            }}
-          >
-            <div
-              className="orb1 absolute"
-              style={{
-                top: "-10%",
-                left: "-8%",
-                width: 480,
-                height: 480,
-                borderRadius: "50%",
-                background: C.violet,
-                opacity: isMobile
-                  ? darkMode
-                    ? 0.12
-                    : 0.06
-                  : darkMode
-                    ? 0.28
-                    : 0.12,
-
-                filter: `blur(${isMobile ? 45 : 70}px)`,
-              }}
-            />
-            <div
-              className="orb2 absolute"
-              style={{
-                top: "20%",
-                right: "-10%",
-                width: 520,
-                height: 520,
-                borderRadius: "50%",
-                background: C.cyan,
-                opacity: isMobile ? 0.1 : 0.2,
-                filter: `blur(${isMobile ? 50 : 80}px)`,
-              }}
-            />
-            <div
-              className="orb3 absolute"
-              style={{
-                bottom: "-5%",
-                left: "30%",
-                width: 460,
-                height: 460,
-                borderRadius: "50%",
-                background: C.pink,
-                opacity: isMobile ? 0.1 : 0.18,
-                filter: `blur(${isMobile ? 45 : 70}px)`,
-              }}
-            />
-          </div>
-        </>
-      )}
-
-      {/* subtle grain texture for depth */}
-      {!isMobile && (
-        <div
-          className="grain fixed inset-0"
-          style={{
-            zIndex: 0,
-
-            pointerEvents: "none",
-
-            userSelect: "none",
-
-            mixBlendMode: "overlay",
-          }}
-        />
-      )}
-      <div className="relative" style={{ zIndex: 1 }}>
-        {/* ---------------- NAV ---------------- */}
-        <header
-          className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-          style={{
-            background: scrolled
-              ? darkMode
-                ? "rgba(5,6,12,.72)"
-                : "rgba(255,255,255,.82)"
-              : "transparent",
-            backdropFilter: scrolled ? "blur(18px)" : "none",
-            WebkitBackdropFilter: scrolled ? "blur(18px)" : "none",
-            borderBottom: scrolled
-              ? `1px solid ${C.border}`
-              : "1px solid transparent",
-          }}
-        >
-          <div
-            style={{
-              height: 2,
-              width: `${progress}%`,
-              background: GRAD,
-              transition: "width 0.1s linear",
             }}
           />
-          <div
-            className="max-w-6xl mx-auto px-6 md:px-8 flex items-center justify-between"
-            style={{ height: 72 }}
-          >
-            <a
-              href="#top"
-              onClick={scrollTo("top")}
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 800,
-                fontSize: 18,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              <span
-                style={{
-                  fontWeight: 900,
-                  letterSpacing: "0.08em",
-                  fontSize: "2rem",
-                  fontFamily: "'Space Grotesk', sans-serif",
-                }}
-              >
-                HAK
-              </span>
-              <span
-                className="grad-text"
-                style={{
-                  fontWeight: 900,
-                }}
-              >
-                DEV
-              </span>{" "}
-            </a>
+        )}
+        {!isMobile && <Particles />}
+        {!isMobile && (
+          <>
+            {/* ---------- Gradient Beams ---------- */}
 
-            <nav className="hidden md:flex items-center gap-9">
-              {navLinks.map((l) => (
-                <a
-                  key={l.href}
-                  href={`#${l.href}`}
-                  onClick={scrollTo(l.href)}
-                  className={`nav-link mobile-link ${active === l.href ? "active" : ""}`}
-                >
-                  {l.label}
-                </a>
-              ))}
-            </nav>
-
-            <a
-              href="mailto:harisharavind0309@gmail.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 cta-primary"
-              style={{
-                background: GRAD,
-                color: "#05060C",
-                fontSize: 13.5,
-                fontWeight: 700,
-                padding: "10px 18px",
-                borderRadius: 999,
-              }}
-            >
-              Let's talk <ArrowUpRight size={14} />
-            </a>
-            <button
-              onClick={() => setDarkMode((prev) => !prev)}
-              aria-label={
-                darkMode ? "Switch to light mode" : "Switch to dark mode"
-              }
-              aria-pressed={darkMode}
-              style={{
-                display: isMobile ? "none" : "flex",
-                width: 46,
-                height: 46,
-                marginLeft: 12,
-                borderRadius: "50%",
-                border: `1px solid ${C.border}`,
-                background: C.glass,
-                color: C.text,
-                cursor: "pointer",
-                backdropFilter: "blur(18px)",
-                WebkitBackdropFilter: "blur(18px)",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 0,
-                transition:
-                  "background-color .3s ease, border-color .3s ease, color .3s ease",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transform: `rotate(${darkMode ? 180 : 0}deg) scale(${darkMode ? 1 : 0.95})`,
-                  transition: "transform .3s cubic-bezier(.22,1,.36,1)",
-                }}
-              >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </div>{" "}
-            </button>
-
-            <button
-              type="button"
-              className="md:hidden flex items-center justify-center"
-              style={{
-                color: C.text,
-                width: 44,
-                height: 44,
-                borderRadius: 14,
-                border: `1px solid ${C.border}`,
-                background: "rgba(255,255,255,0.05)",
-                transition: "all .45s cubic-bezier(.22,1,.36,1)",
-                transform: navOpen ? "rotate(90deg)" : "rotate(0deg)",
-              }}
-              onClick={() => setNavOpen((v) => !v)}
-              aria-label="Toggle menu"
-              aria-expanded={navOpen}
-            >
-              <div
-                style={{
-                  transform: navOpen ? "rotate(180deg)" : "rotate(0deg)",
-                  transition: "transform .35s cubic-bezier(.16,1,.3,1)",
-                }}
-              >
-                {navOpen ? <X size={20} /> : <Menu size={20} />}
-              </div>
-            </button>
-          </div>
-
-          {navOpen && (
             <div
-              className="mobile-panel md:hidden px-6 pb-6 flex flex-col gap-1"
+              className="fixed inset-0 overflow-hidden"
               style={{
-                background: darkMode
-                  ? "rgba(5,6,12,.96)"
-                  : "rgba(255,255,255,.96)",
-                backdropFilter: "blur(30px)",
-                WebkitBackdropFilter: "blur(30px)",
-                borderTop: `1px solid ${C.border}`,
-                borderBottom: `1px solid ${C.border}`,
-                boxShadow: "0 30px 80px rgba(0,0,0,.45)",
+                zIndex: 0,
+
+                pointerEvents: "none",
+
+                userSelect: "none",
               }}
             >
-              {navLinks.map((l) => (
-                <a
-                  key={l.href}
-                  href={`#${l.href}`}
-                  onClick={scrollTo(l.href)}
-                  className={`nav-link ${active === l.href ? "active" : ""}`}
+              <div
+                className="beam beam1"
+                style={{
+                  width: 650,
+                  height: 220,
+                  background: "linear-gradient(90deg,#8B5CF6,#22D3EE)",
+                  top: "8%",
+                  left: "-12%",
+                }}
+              />
+
+              <div
+                className="beam beam2"
+                style={{
+                  width: 700,
+                  height: 220,
+                  background: "linear-gradient(90deg,#22D3EE,#8B5CF6)",
+                  bottom: "15%",
+                  right: "-15%",
+                }}
+              />
+
+              <div
+                className="beam beam3"
+                style={{
+                  width: 550,
+                  height: 180,
+                  background: "linear-gradient(90deg,#F472B6,#8B5CF6)",
+                  top: "45%",
+                  left: "30%",
+                }}
+              />
+            </div>
+          </>
+        )}
+
+        {!isMobile && (
+          <>
+            {/* ---------------- AMBIENT GRADIENT ORBS (fixed backdrop) ---------------- */}
+            <div
+              className="fixed inset-0 overflow-hidden"
+              style={{
+                zIndex: 0,
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+            >
+              <div
+                className="orb1 absolute"
+                style={{
+                  top: "-10%",
+                  left: "-8%",
+                  width: 480,
+                  height: 480,
+                  borderRadius: "50%",
+                  background: C.violet,
+                  opacity: isMobile
+                    ? darkMode
+                      ? 0.12
+                      : 0.06
+                    : darkMode
+                      ? 0.28
+                      : 0.12,
+
+                  filter: `blur(${isMobile ? 45 : 70}px)`,
+                }}
+              />
+              <div
+                className="orb2 absolute"
+                style={{
+                  top: "20%",
+                  right: "-10%",
+                  width: 520,
+                  height: 520,
+                  borderRadius: "50%",
+                  background: C.cyan,
+                  opacity: isMobile ? 0.1 : 0.2,
+                  filter: `blur(${isMobile ? 50 : 80}px)`,
+                }}
+              />
+              <div
+                className="orb3 absolute"
+                style={{
+                  bottom: "-5%",
+                  left: "30%",
+                  width: 460,
+                  height: 460,
+                  borderRadius: "50%",
+                  background: C.pink,
+                  opacity: isMobile ? 0.1 : 0.18,
+                  filter: `blur(${isMobile ? 45 : 70}px)`,
+                }}
+              />
+            </div>
+          </>
+        )}
+
+        {/* subtle grain texture for depth */}
+        {!isMobile && (
+          <div
+            className="grain fixed inset-0"
+            style={{
+              zIndex: 0,
+
+              pointerEvents: "none",
+
+              userSelect: "none",
+
+              mixBlendMode: "overlay",
+            }}
+          />
+        )}
+        <div className="relative" style={{ zIndex: 1 }}>
+          {/* ---------------- NAV ---------------- */}
+          <header
+            className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+            style={{
+              background: scrolled
+                ? darkMode
+                  ? "rgba(5,6,12,.72)"
+                  : "rgba(255,255,255,.82)"
+                : "transparent",
+              backdropFilter: scrolled ? "blur(18px)" : "none",
+              WebkitBackdropFilter: scrolled ? "blur(18px)" : "none",
+              borderBottom: scrolled
+                ? `1px solid ${C.border}`
+                : "1px solid transparent",
+            }}
+          >
+            <div
+              style={{
+                height: 2,
+                width: `${progress}%`,
+                background: GRAD,
+                transition: "width 0.1s linear",
+              }}
+            />
+            <div
+              className="max-w-6xl mx-auto px-6 md:px-8 flex items-center justify-between"
+              style={{ height: 72 }}
+            >
+              <a
+                href="#top"
+                onClick={scrollTo("top")}
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 800,
+                  fontSize: 18,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                <span
                   style={{
-                    paddingTop: 15,
-                    paddingBottom: 15,
-                    borderBottom: `1px solid ${C.border}`,
-                    fontSize: 15,
-                    transition: "all .3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateX(14px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateX(0)";
+                    fontWeight: 900,
+                    letterSpacing: "0.08em",
+                    fontSize: "2rem",
+                    fontFamily: "'Space Grotesk', sans-serif",
                   }}
                 >
-                  {l.label}
-                </a>
-              ))}
+                  HAK
+                </span>
+                <span
+                  className="grad-text"
+                  style={{
+                    fontWeight: 900,
+                  }}
+                >
+                  DEV
+                </span>{" "}
+              </a>
+
+              <nav className="hidden md:flex items-center gap-9">
+                {navLinks.map((l) => (
+                  <a
+                    key={l.href}
+                    href={`#${l.href}`}
+                    onClick={scrollTo(l.href)}
+                    className={`nav-link mobile-link ${active === l.href ? "active" : ""}`}
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </nav>
+
               <a
                 href="mailto:harisharavind0309@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="cta-primary flex items-center justify-center gap-2"
+                className="hidden md:inline-flex items-center gap-2 cta-primary"
+                style={{
+                  background: GRAD,
+                  color: "#05060C",
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  padding: "10px 18px",
+                  borderRadius: 999,
+                }}
+              >
+                Let's talk <ArrowUpRight size={14} />
+              </a>
+              <button
+                onClick={() => setDarkMode((prev) => !prev)}
+                aria-label={
+                  darkMode ? "Switch to light mode" : "Switch to dark mode"
+                }
+                aria-pressed={darkMode}
+                style={{
+                  display: isMobile ? "none" : "flex",
+                  width: 46,
+                  height: 46,
+                  marginLeft: 12,
+                  borderRadius: "50%",
+                  border: `1px solid ${C.border}`,
+                  background: C.glass,
+                  color: C.text,
+                  cursor: "pointer",
+                  backdropFilter: "blur(18px)",
+                  WebkitBackdropFilter: "blur(18px)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 0,
+                  transition:
+                    "background-color .3s ease, border-color .3s ease, color .3s ease",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transform: `rotate(${darkMode ? 180 : 0}deg) scale(${darkMode ? 1 : 0.95})`,
+                    transition: "transform .3s cubic-bezier(.22,1,.36,1)",
+                  }}
+                >
+                  {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </div>{" "}
+              </button>
+
+              <button
+                type="button"
+                className="md:hidden flex items-center justify-center"
+                style={{
+                  color: C.text,
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  border: `1px solid ${C.border}`,
+                  background: "rgba(255,255,255,0.05)",
+                  transition: "all .45s cubic-bezier(.22,1,.36,1)",
+                  transform: navOpen ? "rotate(90deg)" : "rotate(0deg)",
+                }}
+                onClick={() => setNavOpen((v) => !v)}
+                aria-label="Toggle menu"
+                aria-expanded={navOpen}
+              >
+                <div
+                  style={{
+                    transform: navOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform .35s cubic-bezier(.16,1,.3,1)",
+                  }}
+                >
+                  {navOpen ? <X size={20} /> : <Menu size={20} />}
+                </div>
+              </button>
+            </div>
+
+            {navOpen && (
+              <div
+                className="mobile-panel md:hidden px-6 pb-6 flex flex-col gap-1"
+                style={{
+                  background: darkMode
+                    ? "rgba(5,6,12,.96)"
+                    : "rgba(255,255,255,.96)",
+                  backdropFilter: "blur(30px)",
+                  WebkitBackdropFilter: "blur(30px)",
+                  borderTop: `1px solid ${C.border}`,
+                  borderBottom: `1px solid ${C.border}`,
+                  boxShadow: "0 30px 80px rgba(0,0,0,.45)",
+                }}
+              >
+                {navLinks.map((l) => (
+                  <a
+                    key={l.href}
+                    href={`#${l.href}`}
+                    onClick={scrollTo(l.href)}
+                    className={`nav-link ${active === l.href ? "active" : ""}`}
+                    style={{
+                      paddingTop: 15,
+                      paddingBottom: 15,
+                      borderBottom: `1px solid ${C.border}`,
+                      fontSize: 15,
+                      transition: "all .3s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateX(14px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateX(0)";
+                    }}
+                  >
+                    {l.label}
+                  </a>
+                ))}
+                <a
+                  href="mailto:harisharavind0309@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cta-primary flex items-center justify-center gap-2"
+                  style={{
+                    background: GRAD,
+                    color: "#05060C",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    padding: "13px 18px",
+                    borderRadius: 999,
+                    flex: 1,
+                  }}
+                >
+                  <Mail size={15} />
+                  Let's talk
+                </a>
+              </div>
+            )}
+          </header>
+
+          {/* ---------------- HERO ---------------- */}
+          <section
+            id="top"
+            className="relative max-w-5xl mx-auto px-6 md:px-8 pt-24 pb-16 md:pt-32 md:pb-20 text-center flex flex-col items-center"
+          >
+            <div className="hero-anim-1">
+              <Eyebrow C={C}>React JS Developer . Chennai, India</Eyebrow>
+            </div>
+            <h1
+              className="hero-anim-2"
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 800,
+                fontSize: "clamp(40px, 7vw, 76px)",
+                lineHeight: 1.04,
+                letterSpacing: "-0.03em",
+              }}
+            >
+              Harish Aravind
+              <br />
+              <span className="grad-text">Kumar N S</span>
+            </h1>
+            <p
+              className="hero-anim-3"
+              style={{
+                color: C.muted,
+                fontSize: "clamp(16px, 1.8vw, 19.5px)",
+                lineHeight: 1.75,
+                maxWidth: 600,
+                marginTop: 24,
+              }}
+            >
+              {/* I build fintech interfaces for a living — bus tickets, loan
+            approvals, and payment receipts that have to work the first time.
+            React.js, REST APIs, and a close eye on the details recruiters and
+            users both notice. */}
+              React.js Developer with hands-on experience building responsive
+              web applications, integrating REST APIs, and developing scalable
+              frontend solutions. Passionate about creating clean, user-friendly
+              interfaces and delivering high-quality web applications.
+            </p>
+            <div className="hero-anim-4 flex flex-wrap items-center justify-center gap-4 mt-9">
+              <MagneticButton
+                href="#projects"
+                onClick={scrollTo("projects")}
+                className="cta-primary"
                 style={{
                   background: GRAD,
                   color: "#05060C",
                   fontWeight: 700,
-                  fontSize: 14,
-                  padding: "13px 18px",
+                  fontSize: 15,
+                  padding: "14px 26px",
                   borderRadius: 999,
-                  flex: 1,
                 }}
               >
-                <Mail size={15} />
-                Let's talk
-              </a>
+                View projects
+              </MagneticButton>
+              <MagneticButton
+                href="#contact"
+                onClick={scrollTo("contact")}
+                className="cta-ghost"
+                style={{
+                  border: `1px solid ${C.border}`,
+                  color: C.text,
+                  fontWeight: 600,
+                  fontSize: 15,
+                  padding: "14px 26px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.03)",
+                }}
+              >
+                Get in touch
+              </MagneticButton>
             </div>
-          )}
-        </header>
 
-        {/* ---------------- HERO ---------------- */}
-        <section
-          id="top"
-          className="relative max-w-5xl mx-auto px-6 md:px-8 pt-24 pb-16 md:pt-32 md:pb-20 text-center flex flex-col items-center"
-        >
-          <div className="hero-anim-1">
-            <Eyebrow C={C}>React JS Developer . Chennai, India</Eyebrow>
-          </div>
-          <h1
-            className="hero-anim-2"
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(40px, 7vw, 76px)",
-              lineHeight: 1.04,
-              letterSpacing: "-0.03em",
-            }}
-          >
-            Harish Aravind
-            <br />
-            <span className="grad-text">Kumar N S</span>
-          </h1>
-          <p
-            className="hero-anim-3"
-            style={{
-              color: C.muted,
-              fontSize: "clamp(16px, 1.8vw, 19.5px)",
-              lineHeight: 1.75,
-              maxWidth: 600,
-              marginTop: 24,
-            }}
-          >
-            {/* I build fintech interfaces for a living — bus tickets, loan
-            approvals, and payment receipts that have to work the first time.
-            React.js, REST APIs, and a close eye on the details recruiters and
-            users both notice. */}
-            React.js Developer with hands-on experience building responsive web
-            applications, integrating REST APIs, and developing scalable
-            frontend solutions. Passionate about creating clean, user-friendly
-            interfaces and delivering high-quality web applications.
-          </p>
-          <div className="hero-anim-4 flex flex-wrap items-center justify-center gap-4 mt-9">
-            <MagneticButton
-              href="#projects"
-              onClick={scrollTo("projects")}
-              className="cta-primary"
-              style={{
-                background: GRAD,
-                color: "#05060C",
-                fontWeight: 700,
-                fontSize: 15,
-                padding: "14px 26px",
-                borderRadius: 999,
-              }}
-            >
-              View projects
-            </MagneticButton>
-            <MagneticButton
-              href="#contact"
-              onClick={scrollTo("contact")}
-              className="cta-ghost"
-              style={{
-                border: `1px solid ${C.border}`,
-                color: C.text,
-                fontWeight: 600,
-                fontSize: 15,
-                padding: "14px 26px",
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.03)",
-              }}
-            >
-              Get in touch
-            </MagneticButton>
-          </div>
-
-          <div className="hero-anim-4 mt-14">
-            <GlassCard
-              C={C}
-              hover={false}
-              className="px-8 py-6 w-full"
-              style={{ borderRadius: 20 }}
-            >
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
-                {heroStats.map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex flex-col items-center justify-center text-center"
-                    style={{
-                      width: "100%",
-                      textAlign: "center",
-                    }}
-                  >
-                    <AnimatedCounter
-                      C={C}
-                      end={item.end}
-                      suffix={item.suffix}
-                      decimals={item.decimals || 0}
-                    />
-
+            <div className="hero-anim-4 mt-14">
+              <GlassCard
+                C={C}
+                hover={false}
+                className="px-8 py-6 w-full"
+                style={{ borderRadius: 20 }}
+              >
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+                  {heroStats.map((item) => (
                     <div
+                      key={item.label}
+                      className="flex flex-col items-center justify-center text-center"
                       style={{
-                        color: C.muted,
-                        fontSize: 12.5,
-                        marginTop: 3,
                         width: "100%",
                         textAlign: "center",
                       }}
                     >
-                      {item.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </GlassCard>
-          </div>
-        </section>
+                      <AnimatedCounter
+                        C={C}
+                        end={item.end}
+                        suffix={item.suffix}
+                        decimals={item.decimals || 0}
+                      />
 
-        {/* ---------------- EXPERIENCE ---------------- */}
-        <section
-          id="experience"
-          className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
-        >
-          <Reveal>
-            <SectionTitle
-              kicker="Work Experience"
-              title="Where the code goes live"
-              C={C}
-            />
-          </Reveal>
-          <Reveal delay={0.08}>
-            <GlassCard
-              C={C}
-              glow="rgba(34,211,238,0.15)"
-              className="p-9 md:p-12"
-            >
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-7">
-                <div>
-                  <h3
-                    style={{
-                      fontFamily: "'Space Grotesk', sans-serif",
-                      fontSize: 23,
-                      fontWeight: 700,
-                    }}
-                  >
-                    React JS Developer Trainee
-                  </h3>
-                  <div
-                    className="grad-text"
-                    style={{ fontSize: 14.5, marginTop: 5, fontWeight: 600 }}
-                  >
-                    Rupenet Payment Technology Private Limited
-                  </div>
-                </div>
-                <div
-                  className="flex flex-col md:items-end gap-1.5"
-                  style={{ color: C.mutedDark, fontSize: 13 }}
-                >
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-                    Jan 2026 — Present
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MapPin size={12} /> Chennai, Tamil Nadu
-                  </span>
-                </div>
-              </div>
-              <ul className="grid md:grid-cols-3 gap-5">
-                {[
-                  "Developed responsive FinTech web applications using React.js, JavaScript, Bootstrap, HTML5, and CSS3.",
-                  "Integrated REST APIs using Axios with session handling, timeout configuration, and backend synchronization.",
-                  "Worked across frontend–backend integration, API debugging, state management, and responsive UI optimization.",
-                ].map((t, i) => (
-                  <li key={i} className="flex items-start gap-2.5">
-                    <CheckCircle2
-                      size={16}
-                      style={{ color: C.cyan, marginTop: 2, flexShrink: 0 }}
-                    />
-                    <span
-                      style={{
-                        color: C.text,
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      {t}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </GlassCard>
-          </Reveal>
-        </section>
-
-        {/* ---------------- PROJECTS ---------------- */}
-        <section
-          id="projects"
-          className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
-        >
-          <Reveal>
-            <SectionTitle
-              kicker="Selected Work"
-              title="Products, dashboards, and the sites behind them"
-              grad={GRAD2}
-              C={C}
-            />
-          </Reveal>
-          <div className="flex flex-col gap-8">
-            <Reveal delay={0.05}>
-              <TicketCard
-                C={C}
-                code="TXN · REDBUS-2026-01"
-                title="RedBus Bus Booking System"
-                stack={["React.js", "Axios", "Express.js"]}
-                grad={GRAD}
-                glow="rgba(139,92,246,0.18)"
-                status="Booking Confirmed"
-                blurb="An end-to-end bus booking flow — from search to seat map to a confirmed ticket in hand."
-                bullets={[
-                  "Built bus search, seat selection, boarding/dropping points, passenger details, and booking confirmation.",
-                  "Integrated REST APIs via Axios for trip details, seat availability, ticket booking, transaction history, and cancellation.",
-                ]}
-              />
-            </Reveal>
-            <Reveal delay={0.12}>
-              <TicketCard
-                C={C}
-                code="TXN · INDIFI-2026-02"
-                title="Indifi — Loan Application System"
-                stack={["React.js", "Axios", "Express.js"]}
-                grad={GRAD2}
-                glow="rgba(244,114,182,0.16)"
-                status="Application Approved"
-                blurb="A digital loan onboarding platform designed to make KYC and paperwork feel like the easy part."
-                bullets={[
-                  "Built KYC verification, document upload, form validation, and responsive UI components.",
-                  "Integrated REST APIs for onboarding, verification, and the full loan workflow processing.",
-                ]}
-              />
-            </Reveal>
-            <Reveal delay={0.19}>
-              <TicketCard
-                C={C}
-                code="TXN · CCCS-2026-03"
-                title="Credit Card Collection System"
-                stack={["React.js", "REST APIs", "jsPDF"]}
-                grad={GRAD}
-                glow="rgba(34,211,238,0.16)"
-                status="Receipt Generated"
-                blurb="Collection and reporting tooling built around one rule: every payment gets a clean, verifiable receipt."
-                bullets={[
-                  "Built modules for credit card collection, beneficiary management, transaction reports, and payment processing.",
-                  "Implemented OTP authentication and PDF receipt generation using jsPDF and html2canvas.",
-                ]}
-              />
-            </Reveal>
-            <Reveal delay={0.26}>
-              <TicketCard
-                C={C}
-                code="TXN · BAMS-2026-04"
-                title="Bank Account Management System"
-                stack={["React.js", "Node.js", "Express.js", "REST APIs"]}
-                grad={GRAD2}
-                glow="rgba(244,114,182,0.16)"
-                status="Account Active"
-                blurb="An admin dashboard for creating, updating, and controlling bank accounts — built so nothing gets changed by accident."
-                bullets={[
-                  "Built a responsive dashboard for admins to create, update, view, enable, and disable bank accounts.",
-                  "Developed Express.js routes and controllers alongside secure Axios-integrated REST APIs for account management, user-specific access, and authentication.",
-                  "Shipped CRUD operations, user-level access controls, status toggles, and detailed modal views, responsive across desktop, tablet, and mobile.",
-                ]}
-              />
-            </Reveal>
-          </div>
-
-          {/* ---- Additional website projects ---- */}
-          <div className="mt-16">
-            <Reveal>
-              <div className="mb-8">
-                <div
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 12,
-                    color: C.mutedDark,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  More work at Rupenet
-                </div>
-                <h3
-                  style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontSize: "clamp(20px, 2.6vw, 26px)",
-                    fontWeight: 700,
-                    marginTop: 8,
-                  }}
-                >
-                  Corporate & product websites shipped in 2026
-                </h3>
-              </div>
-            </Reveal>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {additionalProjects.map((p, i) => (
-                <Reveal key={p.title} delay={(i % 3) * 0.08}>
-                  <MiniProjectCard
-                    C={C}
-                    title={p.title}
-                    blurb={p.blurb}
-                    grad={p.grad}
-                  />
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ---------------- SKILLS ---------------- */}
-        <section
-          id="skills"
-          className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
-        >
-          <Reveal>
-            <SectionTitle kicker="Toolkit" title="What's in the stack" C={C} />
-          </Reveal>
-          <div className="grid md:grid-cols-2 gap-6">
-            {skillGroups.map((g, gi) => (
-              <Reveal
-                key={g.label}
-                delay={gi * 0.07}
-                variant={gi % 2 === 0 ? "left" : "right"}
-              >
-                <GlassCard C={C} className="p-7">
-                  <div
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: 11.5,
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      marginBottom: 16,
-                      background: g.grad,
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {g.label}
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {g.items.map((s) => (
-                      <span
-                        key={s}
-                        className="skill-chip"
+                      <div
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          border: `1px solid ${C.border}`,
-                          color: C.text,
-                          fontSize: 13.5,
-                          padding: "10px 16px",
-                          borderRadius: 999,
-                          background: "rgba(255,255,255,0.05)",
-                          transition: "all .3s ease",
+                          color: C.muted,
+                          fontSize: 12.5,
+                          marginTop: 3,
+                          width: "100%",
+                          textAlign: "center",
                         }}
                       >
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontSize: 18,
-                          }}
-                        >
-                          {skillIcons[s] || "⚡"}
-                        </span>
+                        {item.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            </div>
+          </section>
 
-                        <span>{s}</span>
-                      </span>
-                    ))}
+          {/* ---------------- EXPERIENCE ---------------- */}
+          <section
+            id="experience"
+            className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
+          >
+            <Reveal>
+              <SectionTitle
+                kicker="Work Experience"
+                title="Where the code goes live"
+                C={C}
+              />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <GlassCard
+                C={C}
+                glow="rgba(34,211,238,0.15)"
+                className="p-9 md:p-12"
+              >
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-7">
+                  <div>
+                    <h3
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: 23,
+                        fontWeight: 700,
+                      }}
+                    >
+                      React JS Developer Trainee
+                    </h3>
+                    <div
+                      className="grad-text"
+                      style={{ fontSize: 14.5, marginTop: 5, fontWeight: 600 }}
+                    >
+                      Rupenet Payment Technology Private Limited
+                    </div>
                   </div>
-                </GlassCard>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+                  <div
+                    className="flex flex-col md:items-end gap-1.5"
+                    style={{ color: C.mutedDark, fontSize: 13 }}
+                  >
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                      Jan 2026 — Present
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MapPin size={12} /> Chennai, Tamil Nadu
+                    </span>
+                  </div>
+                </div>
+                <ul className="grid md:grid-cols-3 gap-5">
+                  {[
+                    "Developed and maintained 10+ responsive fintech web applications using React.js, JavaScript, Bootstrap, HTML5, and CSS3.",
+                    "Integrated REST APIs using Axios with session handling, timeout configuration, and backend synchronization.",
+                    "Worked across frontend–backend integration, API debugging, state management, and responsive UI optimization.",
+                  ].map((t, i) => (
+                    <li key={i} className="flex items-start gap-2.5">
+                      <CheckCircle2
+                        size={16}
+                        style={{ color: C.cyan, marginTop: 2, flexShrink: 0 }}
+                      />
+                      <span
+                        style={{
+                          color: C.text,
+                          fontSize: 14,
+                          lineHeight: 1.7,
+                        }}
+                      >
+                        {t}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </GlassCard>
+            </Reveal>
+          </section>
 
-        {/* ---------------- EDUCATION ---------------- */}
-        <section
-          id="education"
-          className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
-        >
-          <Reveal>
-            <SectionTitle
-              kicker="Education"
-              title="Foundations"
-              grad={GRAD2}
-              C={C}
-            />
-          </Reveal>
-          <div className="grid md:grid-cols-3 gap-6">
-            {educationData.map((e, i) => (
-              <Reveal key={e.school} delay={i * 0.1}>
-                <GlassCard C={C} className="p-7 h-full flex flex-col">
+          {/* ---------------- PROJECTS ---------------- */}
+          <section
+            id="projects"
+            className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
+          >
+            <Reveal>
+              <SectionTitle
+                kicker="Selected Work"
+                title="Products, dashboards, and the sites behind them"
+                grad={GRAD2}
+                C={C}
+              />
+            </Reveal>
+            <div className="flex flex-col gap-8">
+              <Reveal delay={0.05}>
+                <TicketCard
+                  C={C}
+                  code="TXN · REDBUS-2026-01"
+                  title="RedBus Bus Booking System"
+                  stack={["React.js", "Axios", "Express.js"]}
+                  grad={GRAD}
+                  glow="rgba(139,92,246,0.18)"
+                  status="Booking Confirmed"
+                  blurb="An end-to-end bus booking flow — from search to seat map to a confirmed ticket in hand."
+                  bullets={[
+                    "Built bus search, seat selection, boarding/dropping points, passenger details, and booking confirmation.",
+                    "Integrated REST APIs via Axios for trip details, seat availability, ticket booking, transaction history, and cancellation.",
+                  ]}
+                />
+              </Reveal>
+              <Reveal delay={0.12}>
+                <TicketCard
+                  C={C}
+                  code="TXN · INDIFI-2026-02"
+                  title="Indifi — Loan Application System"
+                  stack={["React.js", "Axios", "Express.js"]}
+                  grad={GRAD2}
+                  glow="rgba(244,114,182,0.16)"
+                  status="Application Approved"
+                  blurb="A digital loan onboarding platform designed to make KYC and paperwork feel like the easy part."
+                  bullets={[
+                    "Built KYC verification, document upload, form validation, and responsive UI components.",
+                    "Integrated REST APIs for onboarding, verification, and the full loan workflow processing.",
+                  ]}
+                />
+              </Reveal>
+              <Reveal delay={0.19}>
+                <TicketCard
+                  C={C}
+                  code="TXN · CCCS-2026-03"
+                  title="Credit Card Collection System"
+                  stack={["React.js", "REST APIs", "jsPDF"]}
+                  grad={GRAD}
+                  glow="rgba(34,211,238,0.16)"
+                  status="Receipt Generated"
+                  blurb="Collection and reporting tooling built around one rule: every payment gets a clean, verifiable receipt."
+                  bullets={[
+                    "Built modules for credit card collection, beneficiary management, transaction reports, and payment processing.",
+                    "Implemented OTP authentication and PDF receipt generation using jsPDF and html2canvas.",
+                  ]}
+                />
+              </Reveal>
+              <Reveal delay={0.26}>
+                <TicketCard
+                  C={C}
+                  code="TXN · BAMS-2026-04"
+                  title="Bank Account Management System"
+                  stack={["React.js", "Node.js", "Express.js", "REST APIs"]}
+                  grad={GRAD2}
+                  glow="rgba(244,114,182,0.16)"
+                  status="Account Active"
+                  blurb="An admin dashboard for creating, updating, and controlling bank accounts — built so nothing gets changed by accident."
+                  bullets={[
+                    "Built a responsive dashboard for admins to create, update, view, enable, and disable bank accounts.",
+                    "Developed Express.js routes and controllers alongside secure Axios-integrated REST APIs for account management, user-specific access, and authentication.",
+                    "Shipped CRUD operations, user-level access controls, status toggles, and detailed modal views, responsive across desktop, tablet, and mobile.",
+                  ]}
+                />
+              </Reveal>
+            </div>
+
+            {/* ---- Additional website projects ---- */}
+            <div className="mt-16">
+              <Reveal>
+                <div className="mb-8">
                   <div
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: 12,
-                      color: C.muted,
+                      color: C.mutedDark,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
                     }}
                   >
-                    {e.period}
+                    More work at Rupenet
                   </div>
                   <h3
                     style={{
                       fontFamily: "'Space Grotesk', sans-serif",
-                      fontSize: 16.5,
+                      fontSize: "clamp(20px, 2.6vw, 26px)",
                       fontWeight: 700,
-                      margin: "12px 0 6px",
+                      marginTop: 8,
                     }}
                   >
-                    {e.school}
+                    Corporate & product websites shipped in 2026
                   </h3>
-                  <p
-                    style={{ color: C.muted, fontSize: 13.5, marginBottom: 18 }}
-                  >
-                    {e.deg}
-                  </p>
-                  <div
-                    className="mt-auto grad-text"
+                </div>
+              </Reveal>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {additionalProjects.map((p, i) => (
+                  <Reveal key={p.title} delay={(i % 3) * 0.08}>
+                    <MiniProjectCard
+                      C={C}
+                      title={p.title}
+                      blurb={p.blurb}
+                      grad={p.grad}
+                    />
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ---------------- SKILLS ---------------- */}
+          <section
+            id="skills"
+            className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
+          >
+            <Reveal>
+              <SectionTitle
+                kicker="Toolkit"
+                title="What's in the stack"
+                C={C}
+              />
+            </Reveal>
+            <div className="grid md:grid-cols-2 gap-6">
+              {skillGroups.map((g, gi) => (
+                <Reveal
+                  key={g.label}
+                  delay={gi * 0.07}
+                  variant={gi % 2 === 0 ? "left" : "right"}
+                >
+                  <GlassCard C={C} className="p-7">
+                    <div
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 11.5,
+                        letterSpacing: "0.1em",
+                        textTransform: "uppercase",
+                        marginBottom: 16,
+                        background: g.grad,
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {g.label}
+                    </div>
+                    <div className="flex flex-wrap gap-2.5">
+                      {g.items.map((s) => (
+                        <span
+                          key={s}
+                          className="skill-chip"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                            border: `1px solid ${C.border}`,
+                            color: C.text,
+                            fontSize: 13.5,
+                            padding: "10px 16px",
+                            borderRadius: 999,
+                            background: "rgba(255,255,255,0.05)",
+                            transition: "all .3s ease",
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              fontSize: 18,
+                            }}
+                          >
+                            {skillIcons[s] || "⚡"}
+                          </span>
+
+                          <span>{s}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </GlassCard>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+
+          {/* ---------------- EDUCATION ---------------- */}
+          <section
+            id="education"
+            className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
+          >
+            <Reveal>
+              <SectionTitle
+                kicker="Education"
+                title="Foundations"
+                grad={GRAD2}
+                C={C}
+              />
+            </Reveal>
+            <div className="grid md:grid-cols-3 gap-6">
+              {educationData.map((e, i) => (
+                <Reveal key={e.school} delay={i * 0.1}>
+                  <GlassCard C={C} className="p-7 h-full flex flex-col">
+                    <div
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 12,
+                        color: C.muted,
+                      }}
+                    >
+                      {e.period}
+                    </div>
+                    <h3
+                      style={{
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontSize: 16.5,
+                        fontWeight: 700,
+                        margin: "12px 0 6px",
+                      }}
+                    >
+                      {e.school}
+                    </h3>
+                    <p
+                      style={{
+                        color: C.muted,
+                        fontSize: 13.5,
+                        marginBottom: 18,
+                      }}
+                    >
+                      {e.deg}
+                    </p>
+                    <div
+                      className="mt-auto grad-text"
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 13.5,
+                        fontWeight: 800,
+                      }}
+                    >
+                      {e.score}
+                    </div>
+                  </GlassCard>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+
+          {/* ---------------- CERTIFICATIONS ---------------- */}
+          <section
+            id="certifications"
+            className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
+          >
+            <Reveal>
+              <SectionTitle
+                kicker="Certifications"
+                title="Backed by verified credentials"
+                C={C}
+              />
+            </Reveal>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {certifications.map((c, i) => (
+                <Reveal key={c.credId} delay={(i % 3) * 0.08}>
+                  <CertCard
+                    C={C}
+                    title={c.title}
+                    issuer={c.issuer}
+                    credId={c.credId}
+                    url={c.url}
+                    grad={c.grad}
+                  />
+                </Reveal>
+              ))}
+            </div>
+          </section>
+
+          {/* ---------------- CONTACT ---------------- */}
+          <section
+            id="contact"
+            className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
+          >
+            <Reveal>
+              <GlassCard
+                C={C}
+                hover={false}
+                glow="rgba(139,92,246,0.25)"
+                className="p-10 md:p-16 text-center"
+              >
+                <div
+                  className="absolute inset-0 opacity-40"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 30% 20%, rgba(139,92,246,0.25), transparent 55%), radial-gradient(circle at 75% 80%, rgba(34,211,238,0.2), transparent 55%)",
+                  }}
+                />
+                <div className="relative">
+                  <div className="flex justify-center">
+                    <Eyebrow C={C}>Contact</Eyebrow>
+                  </div>
+                  <h2
                     style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: 13.5,
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontSize: "clamp(28px, 5vw, 48px)",
                       fontWeight: 800,
+                      letterSpacing: "-0.02em",
+                      maxWidth: 660,
+                      margin: "0 auto",
                     }}
                   >
-                    {e.score}
+                    Building your next release{" "}
+                    <span className="grad-text">let's talk about it.</span>
+                  </h2>
+                  <p
+                    style={{
+                      color: C.muted,
+                      fontSize: 15.5,
+                      marginTop: 18,
+                      maxWidth: 480,
+                      marginLeft: "auto",
+                      marginRight: "auto",
+                    }}
+                  >
+                    Open to React.js frontend and FullStack roles. Reach out
+                    directly, no forms.
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
+                    <MagneticButton
+                      href="mailto:harisharavind0309@gmail.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cta-primary flex items-center gap-2"
+                      style={{
+                        background: GRAD,
+                        color: "#05060C",
+                        fontWeight: 700,
+                        fontSize: 14.5,
+                        padding: "14px 24px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      <Mail size={16} /> Get in Touch
+                    </MagneticButton>
+                    <MagneticButton
+                      href="tel:+919566843200"
+                      className="cta-ghost flex items-center gap-2"
+                      style={{
+                        border: `1px solid ${C.border}`,
+                        color: C.text,
+                        fontWeight: 600,
+                        fontSize: 14.5,
+                        padding: "14px 24px",
+                        borderRadius: 999,
+                        background: "rgba(255,255,255,0.03)",
+                      }}
+                    >
+                      <Phone size={16} /> Schedule a Call
+                    </MagneticButton>
                   </div>
-                </GlassCard>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------------- CERTIFICATIONS ---------------- */}
-        <section
-          id="certifications"
-          className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
-        >
-          <Reveal>
-            <SectionTitle
-              kicker="Certifications"
-              title="Backed by verified credentials"
-              C={C}
-            />
-          </Reveal>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {certifications.map((c, i) => (
-              <Reveal key={c.credId} delay={(i % 3) * 0.08}>
-                <CertCard
-                  C={C}
-                  title={c.title}
-                  issuer={c.issuer}
-                  credId={c.credId}
-                  url={c.url}
-                  grad={c.grad}
-                />
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        {/* ---------------- CONTACT ---------------- */}
-        <section
-          id="contact"
-          className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-14"
-        >
-          <Reveal>
-            <GlassCard
-              C={C}
-              hover={false}
-              glow="rgba(139,92,246,0.25)"
-              className="p-10 md:p-16 text-center"
-            >
-              <div
-                className="absolute inset-0 opacity-40"
-                style={{
-                  background:
-                    "radial-gradient(circle at 30% 20%, rgba(139,92,246,0.25), transparent 55%), radial-gradient(circle at 75% 80%, rgba(34,211,238,0.2), transparent 55%)",
-                }}
-              />
-              <div className="relative">
-                <div className="flex justify-center">
-                  <Eyebrow C={C}>Contact</Eyebrow>
                 </div>
-                <h2
-                  style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontSize: "clamp(28px, 5vw, 48px)",
-                    fontWeight: 800,
-                    letterSpacing: "-0.02em",
-                    maxWidth: 660,
-                    margin: "0 auto",
-                  }}
-                >
-                  Building your next release{" "}
-                  <span className="grad-text">let's talk about it.</span>
-                </h2>
-                <p
-                  style={{
-                    color: C.muted,
-                    fontSize: 15.5,
-                    marginTop: 18,
-                    maxWidth: 480,
-                    marginLeft: "auto",
-                    marginRight: "auto",
-                  }}
-                >
-                  Open to React.js frontend and FullStack roles. Reach out
-                  directly, no forms.
-                </p>
-                <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
-                  <MagneticButton
-                    href="mailto:harisharavind0309@gmail.com"
+              </GlassCard>
+            </Reveal>
+          </section>
+
+          {/* ---------------- FOOTER ---------------- */}
+          <footer
+            className="max-w-6xl mx-auto px-6 md:px-8 py-10"
+            style={{ borderTop: `1px solid ${C.border}` }}
+          >
+            <Reveal>
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div style={{ color: C.mutedDark, fontSize: 13 }}>
+                  © 2026 Harish Aravind Kumar N S. All rights reserved.
+                </div>
+
+                <div className="flex items-center gap-4">
+                  {/* LinkedIn */}
+                  <a
+                    href="https://www.linkedin.com/in/harisharavind3902/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="cta-primary flex items-center gap-2"
+                    aria-label="LinkedIn"
+                    className="cta-ghost footer-icon flex items-center justify-center"
                     style={{
-                      background: GRAD,
-                      color: "#05060C",
-                      fontWeight: 700,
-                      fontSize: 14.5,
-                      padding: "14px 24px",
-                      borderRadius: 999,
-                    }}
-                  >
-                    <Mail size={16} /> Get in Touch
-                  </MagneticButton>
-                  <MagneticButton
-                    href="tel:+919566843200"
-                    className="cta-ghost flex items-center gap-2"
-                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: 12,
                       border: `1px solid ${C.border}`,
-                      color: C.text,
-                      fontWeight: 600,
-                      fontSize: 14.5,
-                      padding: "14px 24px",
-                      borderRadius: 999,
+                      color: C.muted,
                       background: "rgba(255,255,255,0.03)",
                     }}
                   >
-                    <Phone size={16} /> Schedule a Call
-                  </MagneticButton>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.48 1s2.5 1.12 2.5 2.5zM.5 8h4V24h-4V8zm7 0h3.8v2.2h.1c.53-1 1.82-2.2 3.75-2.2 4.01 0 4.75 2.64 4.75 6.08V24h-4v-7.1c0-1.69-.03-3.87-2.36-3.87-2.37 0-2.73 1.85-2.73 3.75V24h-4V8z" />
+                    </svg>
+                  </a>
+
+                  {/* GitHub */}
+                  <a
+                    href="https://github.com/HarishHaks"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub"
+                    className="cta-ghost footer-icon flex items-center justify-center"
+                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: 12,
+                      border: `1px solid ${C.border}`,
+                      color: C.muted,
+                      background: "rgba(255,255,255,0.03)",
+                    }}
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 008 10.94c.58.1.79-.25.79-.56v-2.17c-3.25.71-3.94-1.57-3.94-1.57-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.7.08-.7 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.39.97.11-.75.41-1.27.74-1.56-2.59-.3-5.31-1.29-5.31-5.75 0-1.27.46-2.31 1.2-3.12-.12-.3-.52-1.52.12-3.17 0 0 .98-.31 3.2 1.19a11.1 11.1 0 015.83 0c2.22-1.5 3.2-1.19 3.2-1.19.64 1.65.24 2.87.12 3.17.75.81 1.2 1.85 1.2 3.12 0 4.47-2.72 5.45-5.32 5.74.42.37.8 1.1.8 2.22v3.29c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z" />
+                    </svg>
+                  </a>
                 </div>
               </div>
-            </GlassCard>
-          </Reveal>
-        </section>
-
-        {/* ---------------- FOOTER ---------------- */}
-        <footer
-          className="max-w-6xl mx-auto px-6 md:px-8 py-10"
-          style={{ borderTop: `1px solid ${C.border}` }}
-        >
-          <Reveal>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div style={{ color: C.mutedDark, fontSize: 13 }}>
-                © 2026 Harish Aravind Kumar N S. Built with React.
-              </div>
-
-              <div className="flex items-center gap-4">
-                {/* LinkedIn */}
-                <a
-                  href="https://www.linkedin.com/in/harisharavind3902/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="cta-ghost footer-icon flex items-center justify-center"
-                  style={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 12,
-                    border: `1px solid ${C.border}`,
-                    color: C.muted,
-                    background: "rgba(255,255,255,0.03)",
-                  }}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.48 1s2.5 1.12 2.5 2.5zM.5 8h4V24h-4V8zm7 0h3.8v2.2h.1c.53-1 1.82-2.2 3.75-2.2 4.01 0 4.75 2.64 4.75 6.08V24h-4v-7.1c0-1.69-.03-3.87-2.36-3.87-2.37 0-2.73 1.85-2.73 3.75V24h-4V8z" />
-                  </svg>
-                </a>
-
-                {/* GitHub */}
-                <a
-                  href="https://github.com/HarishHaks"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub"
-                  className="cta-ghost footer-icon flex items-center justify-center"
-                  style={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 12,
-                    border: `1px solid ${C.border}`,
-                    color: C.muted,
-                    background: "rgba(255,255,255,0.03)",
-                  }}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 008 10.94c.58.1.79-.25.79-.56v-2.17c-3.25.71-3.94-1.57-3.94-1.57-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.7.08-.7 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.39.97.11-.75.41-1.27.74-1.56-2.59-.3-5.31-1.29-5.31-5.75 0-1.27.46-2.31 1.2-3.12-.12-.3-.52-1.52.12-3.17 0 0 .98-.31 3.2 1.19a11.1 11.1 0 015.83 0c2.22-1.5 3.2-1.19 3.2-1.19.64 1.65.24 2.87.12 3.17.75.81 1.2 1.85 1.2 3.12 0 4.47-2.72 5.45-5.32 5.74.42.37.8 1.1.8 2.22v3.29c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </Reveal>
-        </footer>
-      </div>
-      {/* ---------------- FLOATING CONTACT FAB ---------------- */}
-      {/* Floating Theme Button (Mobile Only) */}
-      <div
-        className="fab-float fixed md:hidden"
-        style={{
-          bottom: 24,
-          left: 10,
-          zIndex: 60,
-        }}
-      >
-        <button
-          onClick={() => setDarkMode((prev) => !prev)}
-          aria-label="Toggle Theme"
+            </Reveal>
+          </footer>
+        </div>
+        {/* ---------------- FLOATING CONTACT FAB ---------------- */}
+        {/* Floating Theme Button (Mobile Only) */}
+        <div
+          className="fab-float fixed md:hidden"
           style={{
-            width: 58,
-            height: 58,
-            borderRadius: "50%",
-            border: `1px solid ${C.border}`,
-            background: C.glass,
-            color: C.text,
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            boxShadow:
-              "0 14px 35px rgba(0,0,0,.35), 0 0 18px rgba(139,92,246,.18)",
-            transition:
-              "background-color .3s ease, border-color .3s ease, color .3s ease, box-shadow .3s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0) scale(1)";
+            bottom: 24,
+            left: 10,
+            zIndex: 60,
           }}
         >
-          {darkMode ? (
-            <Sun size={22} strokeWidth={2} />
-          ) : (
-            <Moon size={22} strokeWidth={2} />
-          )}
-        </button>
-      </div>
-      <div
-        className="fab-float fixed"
-        style={{
-          bottom: 24,
-          right: 24,
-          zIndex: 60,
-          opacity: contactVisible ? 0 : 1,
-          transform: contactVisible
-            ? "translateY(16px) scale(0.9)"
-            : "translateY(0) scale(1)",
-          pointerEvents: contactVisible ? "none" : "auto",
-          transition: "opacity 0.3s ease, transform 0.3s ease",
-        }}
-      >
-        <a
-          href="mailto:harisharavind0309@gmail.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="cta-primary flex items-center gap-2"
+          <button
+            onClick={() => setDarkMode((prev) => !prev)}
+            aria-label="Toggle Theme"
+            style={{
+              width: 58,
+              height: 58,
+              borderRadius: "50%",
+              border: `1px solid ${C.border}`,
+              background: C.glass,
+              color: C.text,
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              boxShadow:
+                "0 14px 35px rgba(0,0,0,.35), 0 0 18px rgba(139,92,246,.18)",
+              transition:
+                "background-color .3s ease, border-color .3s ease, color .3s ease, box-shadow .3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0) scale(1)";
+            }}
+          >
+            {darkMode ? (
+              <Sun size={22} strokeWidth={2} />
+            ) : (
+              <Moon size={22} strokeWidth={2} />
+            )}
+          </button>
+        </div>
+        <div
+          className="fab-float fixed"
           style={{
-            background: GRAD,
-            color: "#05060C",
-            fontWeight: 700,
-            fontSize: 13.5,
-            padding: "14px 16px",
-            borderRadius: 999,
-            boxShadow: "0 16px 40px -12px rgba(139,92,246,0.55)",
-            cursor: "pointer",
+            bottom: 24,
+            right: 24,
+            zIndex: 60,
+            opacity: contactVisible ? 0 : 1,
+            transform: contactVisible
+              ? "translateY(16px) scale(0.9)"
+              : "translateY(0) scale(1)",
+            pointerEvents: contactVisible ? "none" : "auto",
+            transition: "opacity 0.3s ease, transform 0.3s ease",
           }}
         >
-          <Mail size={22} />
-          <span className="hidden sm:inline">Let's talk</span>
-        </a>
+          <a
+            href="mailto:harisharavind0309@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cta-primary flex items-center gap-2"
+            style={{
+              background: GRAD,
+              color: "#05060C",
+              fontWeight: 700,
+              fontSize: 13.5,
+              padding: "14px 16px",
+              borderRadius: 999,
+              boxShadow: "0 16px 40px -12px rgba(139,92,246,0.55)",
+              cursor: "pointer",
+            }}
+          >
+            <Mail size={22} />
+            <span className="hidden sm:inline">Let's talk</span>
+          </a>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
