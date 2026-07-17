@@ -1,18 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-// import {
-//   Mail,
-//   Phone,
-//   Linkedin,
-//   GitHub,
-//   Menu,
-//   X,
-//   ArrowUpRight,
-//   CheckCircle2,
-//   MapPin,
-//   Sparkles,
-//   Award,
-//   ExternalLink,
-// } from "lucide-react";
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   FaReact,
@@ -42,8 +35,6 @@ import {
 import {
   Mail,
   Phone,
-  // Linkedin,
-  // Github,
   Menu,
   X,
   ArrowUpRight,
@@ -124,7 +115,7 @@ function useReveal() {
   return [ref, visible];
 }
 
-function Reveal({ children, delay = 0, variant = "up" }) {
+const Reveal = memo(function Reveal({ children, delay = 0, variant = "up" }) {
   const [ref, visible] = useReveal();
   const hidden =
     variant === "left"
@@ -149,9 +140,9 @@ function Reveal({ children, delay = 0, variant = "up" }) {
       {children}
     </div>
   );
-}
+});
 
-function Eyebrow({ children, grad = GRAD, C = DARK }) {
+const Eyebrow = memo(function Eyebrow({ children, grad = GRAD, C = DARK }) {
   return (
     <div
       className="inline-flex items-center gap-2 mb-4 px-3 py-1.5"
@@ -180,9 +171,14 @@ function Eyebrow({ children, grad = GRAD, C = DARK }) {
       </span>
     </div>
   );
-}
+});
 
-function SectionTitle({ kicker, title, grad, C = DARK }) {
+const SectionTitle = memo(function SectionTitle({
+  kicker,
+  title,
+  grad,
+  C = DARK,
+}) {
   return (
     <div className="mb-14">
       <Eyebrow grad={grad} C={C}>
@@ -201,10 +197,10 @@ function SectionTitle({ kicker, title, grad, C = DARK }) {
       </h2>
     </div>
   );
-}
+});
 
 /* ---------------- Glass card wrapper ---------------- */
-function GlassCard({
+const GlassCard = memo(function GlassCard({
   children,
   className = "",
   style = {},
@@ -212,18 +208,17 @@ function GlassCard({
   glow,
   C = DARK,
 }) {
-  const [spotlight, setSpotlight] = useState({
-    x: 50,
-    y: 50,
-  });
 
   const handleMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
 
-    setSpotlight({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-    });
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    e.currentTarget.style.setProperty("--spot-x", `${x}%`);
+
+    e.currentTarget.style.setProperty("--spot-y", `${y}%`);
   };
 
   return (
@@ -231,6 +226,8 @@ function GlassCard({
       onMouseMove={handleMove}
       className={`glass-card ${hover ? "glass-hover" : ""} ${className}`}
       style={{
+        "--spot-x": "50%",
+        "--spot-y": "50%",
         background: C.glass,
         border: `1px solid ${C.border}`,
         borderRadius: 24,
@@ -248,24 +245,24 @@ function GlassCard({
         className="glass-spotlight"
         style={{
           background: `
-      radial-gradient(
-        circle at ${spotlight.x}% ${spotlight.y}%,
-        rgba(255,255,255,.25),
-        rgba(139,92,246,.10) 20%,
-        rgba(34,211,238,.06) 35%,
-        transparent 72%
-      )
-    `,
+radial-gradient(
+circle at
+var(--spot-x,50%)
+var(--spot-y,50%),
+rgba(255,255,255,.16),
+transparent 60%
+)
+`,
         }}
       />
 
       {children}
     </div>
   );
-}
+});
 
 /* ---------------- Glass ticket-style project card ---------------- */
-function TicketCard({
+const TicketCard = memo(function TicketCard({
   code,
   title,
   stack,
@@ -404,10 +401,15 @@ function TicketCard({
       </div>
     </GlassCard>
   );
-}
+});
 
 /* ---------------- Compact card for additional website projects ---------------- */
-function MiniProjectCard({ title, blurb, grad, C }) {
+const MiniProjectCard = memo(function MiniProjectCard({
+  title,
+  blurb,
+  grad,
+  C,
+}) {
   return (
     <GlassCard
       C={C}
@@ -480,10 +482,17 @@ function MiniProjectCard({ title, blurb, grad, C }) {
       </div>
     </GlassCard>
   );
-}
+});
 
 /* ---------------- Certification card ---------------- */
-function CertCard({ title, issuer, credId, url, grad, C }) {
+const CertCard = memo(function CertCard({
+  title,
+  issuer,
+  credId,
+  url,
+  grad,
+  C,
+}) {
   return (
     <GlassCard
       C={C}
@@ -555,9 +564,9 @@ function CertCard({ title, issuer, credId, url, grad, C }) {
       </a>
     </GlassCard>
   );
-}
+});
 
-function AnimatedCounter({
+const AnimatedCounter = memo(function AnimatedCounter({
   end,
   duration = 1800,
   suffix = "",
@@ -570,21 +579,28 @@ function AnimatedCounter({
   useEffect(() => {
     if (!visible) return;
 
-    let start = 0;
-    const increment = end / (duration / 16);
+    let animationFrame;
+    let startTime;
 
-    const timer = setInterval(() => {
-      start += increment;
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
 
-      if (start >= end) {
-        start = end;
-        clearInterval(timer);
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+
+      const value = end * progress;
+
+      setCount(value);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      } else {
+        setCount(end);
       }
+    };
 
-      setCount(start);
-    }, 16);
+    animationFrame = requestAnimationFrame(animate);
 
-    return () => clearInterval(timer);
+    return () => cancelAnimationFrame(animationFrame);
   }, [visible, end, duration]);
 
   return (
@@ -625,10 +641,31 @@ function AnimatedCounter({
       </div>
     </div>
   );
-}
+});
 
-function Particles() {
-  const particles = Array.from({ length: 40 });
+const Particles = memo(function Particles() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const resize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", resize);
+
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
+  const particles = useMemo(() => {
+    const count = isMobile ? 12 : 40;
+
+    return Array.from({ length: count }, () => ({
+      size: Math.random() * 5 + 1,
+      left: Math.random() * 100,
+      duration: Math.random() * 18 + 18,
+      delay: Math.random() * 10,
+    }));
+  }, [isMobile]);
 
   return (
     <div
@@ -641,32 +678,35 @@ function Particles() {
         zIndex: 0,
       }}
     >
-      {particles.map((_, i) => {
-        const size = Math.random() * 5 + 1;
-        const left = Math.random() * 100;
-        const duration = Math.random() * 18 + 18;
-        const delay = Math.random() * 10;
-
-        return (
-          <span
-            key={i}
-            className="particle"
-            style={{
-              width: size,
-              height: size,
-              left: `${left}%`,
-              animationDuration: `${duration}s`,
-              animationDelay: `${delay}s`,
-            }}
-          />
-        );
-      })}
+      {particles.map((particle, i) => (
+        <span
+          key={i}
+          className="particle"
+          style={{
+            width: particle.size,
+            height: particle.size,
+            left: `${particle.left}%`,
+            animationDuration: `${particle.duration}s`,
+            animationDelay: `${particle.delay}s`,
+          }}
+        />
+      ))}
     </div>
   );
-}
+});
 
-function MagneticButton({ children, className = "", style = {}, ...props }) {
-  const [position, setPosition] = useState({
+const MagneticButton = memo(function MagneticButton({
+  children,
+  className = "",
+  style = {},
+  ...props
+}) {
+  const isMobile = window.innerWidth < 768;
+
+  const buttonRef = useRef(null);
+  const frameRef = useRef(null);
+
+  const target = useRef({
     x: 0,
     y: 0,
   });
@@ -674,39 +714,53 @@ function MagneticButton({ children, className = "", style = {}, ...props }) {
   const handleMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
 
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
+    target.current.x = (e.clientX - rect.left - rect.width / 2) * 0.22;
 
-    setPosition({
-      x: x * 0.22,
-      y: y * 0.22,
-    });
+    target.current.y = (e.clientY - rect.top - rect.height / 2) * 0.22;
+
+    if (!frameRef.current) {
+      frameRef.current = requestAnimationFrame(updatePosition);
+    }
+  };
+
+  const updatePosition = () => {
+    if (buttonRef.current) {
+      buttonRef.current.style.transform = `translate(${target.current.x}px, ${target.current.y}px)`;
+    }
+
+    frameRef.current = null;
   };
 
   const reset = () => {
-    setPosition({
+    target.current = {
       x: 0,
       y: 0,
-    });
+    };
+
+    if (buttonRef.current) {
+      buttonRef.current.style.transform = "translate(0px,0px)";
+    }
   };
 
   return (
     <a
+      ref={buttonRef}
       {...props}
       className={className}
-      onMouseMove={handleMove}
-      onMouseLeave={reset}
+      onMouseMove={isMobile ? undefined : handleMove}
+      onMouseLeave={isMobile ? undefined : reset}
       style={{
         ...style,
-        transform: `translate(${position.x}px, ${position.y}px)`,
+        transform: "translate(0px,0px)",
         transition: "transform .18s ease-out",
         display: "inline-flex",
+        willChange: "transform",
       }}
     >
       {children}
     </a>
   );
-}
+});
 
 const skillIcons = {
   "React.js": <FaReact color="#61DAFB" />,
@@ -736,6 +790,196 @@ const skillIcons = {
   Meta: <SiMeta color="#1877F2" />,
 };
 
+const navLinks = [
+  { label: "Work", href: "experience" },
+  { label: "Projects", href: "projects" },
+  { label: "Skills", href: "skills" },
+  { label: "Education", href: "education" },
+  { label: "Certs", href: "certifications" },
+  { label: "Contact", href: "contact" },
+];
+
+const skillGroups = [
+  {
+    label: "Frontend",
+    grad: GRAD,
+    items: [
+      "React.js",
+      "JavaScript (ES6+)",
+      "HTML5",
+      "CSS3",
+      "Bootstrap",
+      "Tailwind CSS",
+    ],
+  },
+  {
+    label: "Backend",
+    grad: GRAD2,
+    items: ["Node.js", "Express.js", "REST API Integration"],
+  },
+  { label: "Tools", grad: GRAD, items: ["Git", "VS Code", "Postman"] },
+  {
+    label: "Practice",
+    grad: GRAD2,
+    items: [
+      "Responsive Design",
+      "API Integration",
+      "UI/UX Enhancement",
+      "Debugging",
+    ],
+  },
+];
+
+const heroStats = [
+  {
+    end: 12,
+    suffix: "+",
+    label: "Projects Delivered",
+  },
+  {
+    end: 8,
+    suffix: "+",
+    label: "REST APIs Integrated",
+  },
+  {
+    end: 100,
+    suffix: "%",
+    label: "Responsive Design",
+  },
+  {
+    end: 92.6,
+    suffix: "%",
+    decimals: 1,
+    label: "MCA • SRM Institute",
+  },
+];
+
+const additionalProjects = [
+  {
+    title: "FinX Collectie",
+    blurb:
+      "Corporate landing site for AI-powered loan collection and recovery solutions, built with reusable React.js components.",
+    grad: GRAD,
+  },
+  {
+    title: "FinX Gym",
+    blurb:
+      "Product website for gym management and business solutions, with a consistent, cross-browser compatible design.",
+    grad: GRAD2,
+  },
+
+  {
+    title: "PayRupe Micro ATM",
+    blurb:
+      "Landing site for digital banking and cash withdrawal services, tuned for accessibility across screen sizes.",
+    grad: GRAD,
+  },
+  {
+    title: "FinX Payment Gateway",
+    blurb:
+      "Product website presenting secure online payment solutions through a clean, professional interface.",
+    grad: GRAD2,
+  },
+  {
+    title: "FinX School",
+    blurb:
+      "Corporate site for FinX School, showcasing school ERP features and education management solutions.",
+    grad: GRAD,
+  },
+  {
+    title: "FinX International",
+    blurb:
+      "Website highlighting global fintech services and business solutions for an international audience.",
+    grad: GRAD2,
+  },
+  {
+    title: "FinX AI Voice Bot",
+    blurb:
+      "Landing site for an AI-powered customer engagement product, built for a visually engaging first impression.",
+    grad: GRAD,
+  },
+  {
+    title: "PayRupe Lending",
+    blurb:
+      "Product website presenting digital lending and loan services, optimized across desktop, tablet, and mobile.",
+    grad: GRAD2,
+  },
+];
+
+const educationData = [
+  {
+    school: "SRM Institute of Science and Technology",
+    deg: "Master of Computer Applications",
+    period: "2023 – 2025",
+    score: "92.60%",
+  },
+  {
+    school: "B. S. Abdur Rahman Crescent Institute of Science and Technology",
+    deg: "Bachelor of Computer Applications",
+    period: "2020 – 2023",
+    score: "84.80%",
+  },
+  {
+    school: "St Joseph's Matric Hr. Sec. School",
+    deg: "Computer Science, 12th & 10th",
+    period: "2018 – 2020",
+    score: "83.00% / 61.50%",
+  },
+];
+
+const certifications = [
+  {
+    title: "Introduction to Front-End Development",
+    issuer: "Meta",
+    credId: "VR673AUXA2Z5",
+    url: "...",
+    grad: GRAD,
+  },
+
+  {
+    title: "Introduction to HTML, CSS, & JavaScript",
+    issuer: "IBM",
+    credId: "HPLYN828VAHP",
+    url: "https://www.coursera.org/account/accomplishments/records/HPLYN828VAHP",
+    grad: GRAD2,
+  },
+  {
+    title: "Version Control",
+    issuer: "Meta",
+    credId: "AAOHBHNXXSZ3",
+    url: "https://coursera.org/share/311b41d4d12cf747d73a2e8d80bc1186",
+    grad: GRAD,
+  },
+  {
+    title: "Programming with JavaScript",
+    issuer: "Meta",
+    credId: "F1CY9NBHB1YG",
+    url: "https://www.coursera.org/account/accomplishments/records/F1CY9NBHB1YG",
+    grad: GRAD2,
+  },
+  {
+    title: "HTML and CSS in Depth",
+    issuer: "Meta",
+    credId: "4RCGHKTDY49D",
+    url: "https://www.coursera.org/account/accomplishments/records/4RCGHKTDY49D",
+    grad: GRAD,
+  },
+  {
+    title: "React Basics",
+    issuer: "Meta",
+    credId: "IFOPTIJUNIK1",
+    url: "https://www.coursera.org/account/accomplishments/records/IFOPTIJUNIK1",
+    grad: GRAD2,
+  },
+  {
+    title: "SQL: A Practical Introduction for Querying Databases",
+    issuer: "Meta",
+    credId: "0NZIA1DG5O8C",
+    url: "https://www.coursera.org/account/accomplishments/verify/0NZIA1DG5O8C",
+    grad: GRAD,
+  },
+];
+
 export default function Portfolio() {
   const [navOpen, setNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -746,15 +990,31 @@ export default function Portfolio() {
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
 
-  const [mousePosition, setMousePosition] = useState({
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-  });
+  const spotlightRef = useRef(null);
+  const animationRef = useRef(null);
 
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("theme") !== "light";
   });
+
+  useEffect(() => {
+    document.body.classList.toggle("dark", darkMode);
+    document.body.classList.toggle("light", !darkMode);
+  }, [darkMode]);
+
   const C = darkMode ? DARK : LIGHT;
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -764,35 +1024,37 @@ export default function Portfolio() {
     const t = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(t);
   }, []);
+
   useEffect(() => {
-    let progress = 0;
+    let animationId;
+    let startTime;
 
-    const timer = setInterval(() => {
-      progress += Math.floor(Math.random() * 8) + 3;
+    const duration = 1000; // 1 seconds
 
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(timer);
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
 
+      const elapsed = timestamp - startTime;
+
+      const progress = Math.min((elapsed / duration) * 100, 100);
+
+      const next = Math.floor(progress);
+
+      setLoadingProgress((prev) => (prev !== next ? next : prev));
+
+      if (progress < 100) {
+        animationId = requestAnimationFrame(animate);
+      } else {
         setTimeout(() => {
           setLoading(false);
         }, 400);
       }
+    };
 
-      setLoadingProgress(progress);
-    }, 70);
+    animationId = requestAnimationFrame(animate);
 
-    return () => clearInterval(timer);
+    return () => cancelAnimationFrame(animationId);
   }, []);
-
-  const navLinks = [
-    { label: "Work", href: "experience" },
-    { label: "Projects", href: "projects" },
-    { label: "Skills", href: "skills" },
-    { label: "Education", href: "education" },
-    { label: "Certs", href: "certifications" },
-    { label: "Contact", href: "contact" },
-  ];
 
   useEffect(() => {
     const onScroll = () => {
@@ -826,22 +1088,38 @@ export default function Portfolio() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // hide the floating contact button once the Contact section is on screen
+
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: e.clientX,
-        y: e.clientY,
-      });
+    if (isMobile) return;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    const update = () => {
+      if (spotlightRef.current) {
+        spotlightRef.current.style.transform = `translate3d(${mouseX - 175}px, ${mouseY - 175}px,0)`;
+      }
+
+      animationRef.current = requestAnimationFrame(update);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    const move = (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    };
+
+    window.addEventListener("mousemove", move);
+
+    animationRef.current = requestAnimationFrame(update);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
+      window.removeEventListener("mousemove", move);
 
-  // hide the floating contact button once the Contact section is on screen
+      cancelAnimationFrame(animationRef.current);
+    };
+  }, [isMobile]);
+
   useEffect(() => {
     const el = document.getElementById("contact");
     if (!el) return;
@@ -853,43 +1131,28 @@ export default function Portfolio() {
     return () => io.disconnect();
   }, []);
 
-  const scrollTo = (id) => (e) => {
-    e.preventDefault();
-    setNavOpen(false);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const scrollTo = useCallback(
+    (id) => (e) => {
+      e.preventDefault();
 
-  const skillGroups = [
-    {
-      label: "Frontend",
-      grad: GRAD,
-      items: [
-        "React.js",
-        "JavaScript (ES6+)",
-        "HTML5",
-        "CSS3",
-        "Bootstrap",
-        "Tailwind CSS",
-      ],
+      setNavOpen(false);
+
+      const el = document.getElementById(id);
+
+      if (el) {
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
     },
-    {
-      label: "Backend",
-      grad: GRAD2,
-      items: ["Node.js", "Express.js", "REST API Integration"],
-    },
-    { label: "Tools", grad: GRAD, items: ["Git", "VS Code", "Postman"] },
-    {
-      label: "Practice",
-      grad: GRAD2,
-      items: [
-        "Responsive Design",
-        "API Integration",
-        "UI/UX Enhancement",
-        "Debugging",
-      ],
-    },
-  ];
+    [],
+  );
+
+  const loadingStatus = "Launching Website...";
+
+  const loadingSubtitle = "HAK.DEV";
+
   if (loading) {
     return (
       <div
@@ -919,7 +1182,7 @@ export default function Portfolio() {
               fontFamily: "'Space Grotesk', sans-serif",
             }}
           >
-            Initializing Experience...
+            {loadingStatus}
           </h1>
 
           <p
@@ -929,7 +1192,7 @@ export default function Portfolio() {
               fontSize: "15px",
             }}
           >
-            React Portfolio v2.0
+            {loadingSubtitle}
           </p>
 
           <div
@@ -946,23 +1209,41 @@ export default function Portfolio() {
                 width: `${loadingProgress}%`,
                 height: "100%",
                 borderRadius: "20px",
-                transition: "width .15s linear",
+                transition: "none",
                 background: "linear-gradient(90deg,#8B5CF6,#22D3EE,#F472B6)",
-                boxShadow: "0 0 25px #8B5CF6",
+                boxShadow: "0 0 12px rgba(139,92,246,.45)",
               }}
             />
           </div>
 
-          <h2
+          <div
             style={{
-              color: "#fff",
-              marginTop: "25px",
-              fontSize: "28px",
-              fontFamily: "'JetBrains Mono', monospace",
+              marginTop: 24,
+              textAlign: "center",
             }}
           >
-            {loadingProgress}%
-          </h2>
+            <h2
+              style={{
+                color: "#fff",
+                fontSize: "28px",
+                fontFamily: "'JetBrains Mono', monospace",
+                marginBottom: 8,
+              }}
+            >
+              {loadingProgress}%
+            </h2>
+
+            <div
+              style={{
+                color: "#A6AFC9",
+                fontSize: "13px",
+                letterSpacing: ".08em",
+                textTransform: "uppercase",
+              }}
+            >
+              Crafting Your Experience...
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -971,15 +1252,26 @@ export default function Portfolio() {
   return (
     <div
       style={{
-        background: C.bg,
+        background:
+          isMobile && darkMode
+            ? `
+        radial-gradient(circle at 20% 15%, rgba(139,92,246,.14), transparent 45%),
+        radial-gradient(circle at 85% 30%, rgba(34,211,238,.10), transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba(244,114,182,.08), transparent 50%),
+        ${C.bg}
+      `
+            : C.bg,
+
         color: C.text,
         minHeight: "100vh",
         fontFamily: "'Inter', sans-serif",
         position: "relative",
-        // opacity: mounted ? 1 : 0,
-        // transition: "opacity 0.6s ease",
         opacity: loading ? 0 : mounted ? 1 : 0,
-        transition: "all .45s ease",
+        transition: `
+background-color .35s ease,
+background .35s ease,
+color .35s ease,
+`,
       }}
     >
       <style>{`
@@ -1012,6 +1304,9 @@ export default function Portfolio() {
 
 .fab-float{
     animation:fabBob 3.5s ease-in-out infinite;
+        will-change: transform;
+    transform: translateZ(0);
+
 }        .badge-bob { animation: badgeBob 3.2s ease-in-out infinite; }
         .fab-float { animation: fabBob 3.6s ease-in-out infinite; }
         .grain { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/></svg>"); }
@@ -1025,27 +1320,101 @@ export default function Portfolio() {
         .orb2 { animation: orbFloat2 17s ease-in-out infinite; }
         .orb3 { animation: orbFloat3 12s ease-in-out infinite; }
 
-        .glass-card { transition:transform .5s cubic-bezier(.22,1,.36,1), border-color .35s ease, box-shadow .35s ease, background .35s ease; }
-        .glass-hover:hover { transform: translateY(-8px) scale(1.015); border-color: ${C.borderHi}; background: ${C.glassHi}; box-shadow: 0 30px 70px -20px rgba(139,92,246,0.28), 0 10px 30px -12px rgba(0,0,0,0.6) !important; }
+.glass-card {
+transition:
+transform .45s cubic-bezier(.22,1,.36,1),
+background-color .35s ease,
+border-color .35s ease,
+box-shadow .35s ease;
 
-        .nav-link { position: relative; color: ${C.muted}; font-size: 14px; font-weight: 500; padding: 8px 4px; transition: color .25s ease; cursor: pointer; }
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+.glass-hover:hover{
+
+    transform:
+        translateY(-10px)
+        scale(1.02)
+        rotateX(2deg)
+        rotateY(-2deg);
+
+    border-color:${C.borderHi};
+
+    background:${C.glassHi};
+
+    box-shadow:
+        0 35px 80px rgba(139,92,246,.22),
+        0 15px 40px rgba(0,0,0,.45);
+
+}
+
+.glass-hover:active{
+
+    transform:
+        translateY(-3px)
+        scale(.99);
+
+}
+
+        .nav-link { position: relative; color: ${C.muted}; font-size: 14px; font-weight: 500; padding: 8px 4px; transition:
+color .25s ease,
+transform .25s ease; cursor: pointer; }
         .nav-link::after { content: ''; position: absolute; left: 0; bottom: 0; width: 0%; height: 2px; border-radius: 2px; background: ${GRAD}; transition: width .3s cubic-bezier(.16,1,.3,1); }
-        .nav-link:hover { color: ${C.text}; }
-        .nav-link:hover::after { width: 100%; }
+.nav-link:hover{
+
+    color:${C.text};
+
+    transform:translateY(-2px);
+
+}
+            .nav-link:hover::after { width: 100%; }
         .nav-link.active { color: ${C.text}; }
         .nav-link.active::after { width: 100%; }
 
-        .cta-primary { transition: transform .25s ease, box-shadow .25s ease; background-size: 200% 200%; }
+.cta-primary{
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background-position .35s ease;
+background-size: 200% 200%; }
 .cta-primary:hover{
 
-    transform:translateY(-2px) scale(1.06);
+    transform:
+        translateY(-4px)
+        scale(1.06);
+
+    background-position:right center;
 
     box-shadow:
-    0 18px 45px rgba(139,92,246,.45);
 
-}        .cta-ghost { transition: border-color .25s ease, background .25s ease, transform .25s ease; }
-        .cta-ghost:hover { border-color:rgba(255,255,255,.35); background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+        0 22px 50px rgba(139,92,246,.45),
 
+        0 0 35px rgba(34,211,238,.20);
+
+}
+.cta-ghost{
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+}
+        .cta-ghost:hover{
+
+    transform:
+        translateY(-4px)
+        scale(1.03);
+
+    border-color:${C.borderHi};
+
+    background:rgba(255,255,255,.08);
+
+    box-shadow:
+
+        0 12px 30px rgba(139,92,246,.18);
+
+}
         .skill-chip { transition: transform .25s ease, border-color .25s ease, background .25s ease; cursor: default; }
         .skill-chip:hover { transform: translateY(-3px) scale(1.03); border-color:rgba(255,255,255,.35); }
 
@@ -1117,14 +1486,28 @@ export default function Portfolio() {
         .grad-text { background: ${GRAD}; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
         @media (prefers-reduced-motion: reduce) {
-          .hero-anim-1, .hero-anim-2, .hero-anim-3, .hero-anim-4, .orb1, .orb2, .orb3, .badge-bob, .fab-float { animation: none !important; }
+          .hero-anim-1, .hero-anim-2, .hero-anim-3, .hero-anim-4, .orb1, .orb2, .orb3, .badge-bob, .fab-float { animation: none !important;     will-change: transform, opacity;
+    transform: translateZ(0);
+ }
         }
-          .footer-icon {
-  transition: all 0.3s ease;
+.footer-icon{
+    transition:
+        transform .3s ease,
+        color .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
 }
 
-.footer-icon:hover {
-  transform: translateY(-4px);
+.footer-icon:hover{
+
+    transform:
+
+        translateY(-6px)
+
+        rotate(6deg)
+
+        scale(1.08);
+
   color: white !important;
   border-color: rgba(255,255,255,0.3) !important;
   box-shadow: 0 10px 25px rgba(139,92,246,0.35);
@@ -1172,6 +1555,10 @@ export default function Portfolio() {
   animation: moveGrid 18s linear infinite;
 
   opacity: .45;
+
+      will-change: transform;
+    transform: translate3d(0,0,0);
+
 }
 
 @keyframes beamMove1 {
@@ -1204,8 +1591,13 @@ export default function Portfolio() {
 .beam{
     position:absolute;
     border-radius:999px;
-    filter:blur(150px);
+    filter: blur(80px);
     opacity:.12;
+
+
+    will-change: transform;
+    transform: translateZ(0);
+
 }
 
 .beam1{
@@ -1244,6 +1636,9 @@ export default function Portfolio() {
 
 .particle{
 
+   will-change: transform, opacity;
+   transform: translate3d(0,0,0);
+
     position:absolute;
 
     bottom:-20px;
@@ -1279,10 +1674,16 @@ box-shadow:
 
     pointer-events:none;
 
+        user-select:none;
+
+
     transition:
         background .08s linear;
 
     z-index:0;
+
+        will-change: background;
+
 
 }
 
@@ -1294,155 +1695,236 @@ box-shadow:
 
 }
 
-*{
-
-transition:
-background .35s ease,
-color .35s ease,
-border-color .35s ease,
-box-shadow .35s ease;
-
-}
 
 .skill-chip{
-    transition:all .35s cubic-bezier(.22,1,.36,1);
+    transition:
+        transform .35s cubic-bezier(.22,1,.36,1),
+        background .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
 }
 
 .skill-chip:hover{
-    transform:translateY(-4px) scale(1.04);
+
+    transform:
+        translateY(-6px)
+        scale(1.06);
+
+    border-color:${C.borderHi};
+
+    background:rgba(255,255,255,.08);
+
     box-shadow:
-        0 12px 28px rgba(139,92,246,.20);
+
+        0 18px 35px rgba(139,92,246,.18),
+
+        0 8px 18px rgba(34,211,238,.12);
+
+}
+
+img,
+svg,
+canvas{
+
+    user-select:none;
+
+    -webkit-user-drag:none;
+
+}
+
+.beam,
+.particle,
+.orb1,
+.orb2,
+.orb3,
+.moving-grid,
+.grain,
+.glass-spotlight{
+
+    pointer-events:none;
+
+    user-select:none;
+
+}
+
+body{
+    transition:
+        background .35s ease,
+        color .35s ease;
+}
+
+body.dark{
+    background:#05060C;
+    color:#F6F8FF;
+}
+
+body.light{
+    background:#F8FAFC;
+    color:#111827;
 }
       `}</style>
-
-      <div
-        style={{
-          position: "fixed",
-          left: mousePosition.x - 175,
-          top: mousePosition.y - 175,
-          width: 350,
-          height: 350,
-          borderRadius: "50%",
-          pointerEvents: "none",
-          zIndex: 0,
-          background:
-            "radial-gradient(circle, rgba(139,92,246,0.20) 0%, rgba(139,92,246,0.12) 35%, rgba(139,92,246,0.04) 60%, transparent 80%)",
-          filter: "blur(55px)",
-          transition: "left .12s ease-out, top .12s ease-out",
-          mixBlendMode: "screen",
-        }}
-      />
-      <div
-        className="moving-grid"
-        style={{
-          backgroundImage: darkMode
-            ? `
+      {!isMobile && (
+        <div
+          ref={spotlightRef}
+          style={{
+            position: "fixed",
+            left: 0,
+            top: 0,
+            width: 350,
+            height: 350,
+            borderRadius: "50%",
+            pointerEvents: "none",
+            zIndex: 0,
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.20) 0%, rgba(139,92,246,0.12) 35%, rgba(139,92,246,0.04) 60%, transparent 80%)",
+            filter: "blur(45px)",
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
+      {!isMobile && (
+        <div
+          className="moving-grid"
+          style={{
+            backgroundImage: darkMode
+              ? `
       linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px)
       `
-            : `
+              : `
       linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px)
       `,
-        }}
-      />
-
-      <Particles />
-
-      {/* ---------- Gradient Beams ---------- */}
-
-      <div
-        className="fixed inset-0 pointer-events-none overflow-hidden"
-        style={{
-          zIndex: 0,
-        }}
-      >
-        <div
-          className="beam beam1"
-          style={{
-            width: 650,
-            height: 220,
-            background: "linear-gradient(90deg,#8B5CF6,#22D3EE)",
-            top: "8%",
-            left: "-12%",
           }}
         />
+      )}
+      {!isMobile && <Particles />}
+      {!isMobile && (
+        <>
+          {/* ---------- Gradient Beams ---------- */}
 
-        <div
-          className="beam beam2"
-          style={{
-            width: 700,
-            height: 220,
-            background: "linear-gradient(90deg,#22D3EE,#8B5CF6)",
-            bottom: "15%",
-            right: "-15%",
-          }}
-        />
+          <div
+            className="fixed inset-0 overflow-hidden"
+            style={{
+              zIndex: 0,
 
-        <div
-          className="beam beam3"
-          style={{
-            width: 550,
-            height: 180,
-            background: "linear-gradient(90deg,#F472B6,#8B5CF6)",
-            top: "45%",
-            left: "30%",
-          }}
-        />
-      </div>
+              pointerEvents: "none",
 
-      {/* ---------------- AMBIENT GRADIENT ORBS (fixed backdrop) ---------------- */}
-      <div
-        className="fixed inset-0 pointer-events-none overflow-hidden"
-        style={{ zIndex: 0 }}
-      >
-        <div
-          className="orb1 absolute"
-          style={{
-            top: "-10%",
-            left: "-8%",
-            width: 480,
-            height: 480,
-            borderRadius: "50%",
-            background: C.violet,
-            opacity: darkMode ? 0.28 : 0.12,
-            filter: "blur(120px)",
-          }}
-        />
-        <div
-          className="orb2 absolute"
-          style={{
-            top: "20%",
-            right: "-10%",
-            width: 520,
-            height: 520,
-            borderRadius: "50%",
-            background: C.cyan,
-            opacity: 0.2,
-            filter: "blur(130px)",
-          }}
-        />
-        <div
-          className="orb3 absolute"
-          style={{
-            bottom: "-5%",
-            left: "30%",
-            width: 460,
-            height: 460,
-            borderRadius: "50%",
-            background: C.pink,
-            opacity: 0.18,
-            filter: "blur(120px)",
-          }}
-        />
-      </div>
+              userSelect: "none",
+            }}
+          >
+            <div
+              className="beam beam1"
+              style={{
+                width: 650,
+                height: 220,
+                background: "linear-gradient(90deg,#8B5CF6,#22D3EE)",
+                top: "8%",
+                left: "-12%",
+              }}
+            />
+
+            <div
+              className="beam beam2"
+              style={{
+                width: 700,
+                height: 220,
+                background: "linear-gradient(90deg,#22D3EE,#8B5CF6)",
+                bottom: "15%",
+                right: "-15%",
+              }}
+            />
+
+            <div
+              className="beam beam3"
+              style={{
+                width: 550,
+                height: 180,
+                background: "linear-gradient(90deg,#F472B6,#8B5CF6)",
+                top: "45%",
+                left: "30%",
+              }}
+            />
+          </div>
+        </>
+      )}
+
+      {!isMobile && (
+        <>
+          {/* ---------------- AMBIENT GRADIENT ORBS (fixed backdrop) ---------------- */}
+          <div
+            className="fixed inset-0 overflow-hidden"
+            style={{
+              zIndex: 0,
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
+            <div
+              className="orb1 absolute"
+              style={{
+                top: "-10%",
+                left: "-8%",
+                width: 480,
+                height: 480,
+                borderRadius: "50%",
+                background: C.violet,
+                opacity: isMobile
+                  ? darkMode
+                    ? 0.12
+                    : 0.06
+                  : darkMode
+                    ? 0.28
+                    : 0.12,
+
+                filter: `blur(${isMobile ? 45 : 70}px)`,
+              }}
+            />
+            <div
+              className="orb2 absolute"
+              style={{
+                top: "20%",
+                right: "-10%",
+                width: 520,
+                height: 520,
+                borderRadius: "50%",
+                background: C.cyan,
+                opacity: isMobile ? 0.1 : 0.2,
+                filter: `blur(${isMobile ? 50 : 80}px)`,
+              }}
+            />
+            <div
+              className="orb3 absolute"
+              style={{
+                bottom: "-5%",
+                left: "30%",
+                width: 460,
+                height: 460,
+                borderRadius: "50%",
+                background: C.pink,
+                opacity: isMobile ? 0.1 : 0.18,
+                filter: `blur(${isMobile ? 45 : 70}px)`,
+              }}
+            />
+          </div>
+        </>
+      )}
 
       {/* subtle grain texture for depth */}
-      <div
-        className="grain fixed inset-0 pointer-events-none"
-        style={{ zIndex: 0, mixBlendMode: "overlay" }}
-      />
+      {!isMobile && (
+        <div
+          className="grain fixed inset-0"
+          style={{
+            zIndex: 0,
 
+            pointerEvents: "none",
+
+            userSelect: "none",
+
+            mixBlendMode: "overlay",
+          }}
+        />
+      )}
       <div className="relative" style={{ zIndex: 1 }}>
         {/* ---------------- NAV ---------------- */}
         <header
@@ -1532,10 +2014,13 @@ box-shadow .35s ease;
               Let's talk <ArrowUpRight size={14} />
             </a>
             <button
-              onClick={() => setDarkMode(!darkMode)}
+              onClick={() => setDarkMode((prev) => !prev)}
+              aria-label={
+                darkMode ? "Switch to light mode" : "Switch to dark mode"
+              }
+              aria-pressed={darkMode}
               style={{
-                display: window.innerWidth < 768 ? "none" : "flex",
-
+                display: isMobile ? "none" : "flex",
                 width: 46,
                 height: 46,
                 marginLeft: 12,
@@ -1546,16 +2031,24 @@ box-shadow .35s ease;
                 cursor: "pointer",
                 backdropFilter: "blur(18px)",
                 WebkitBackdropFilter: "blur(18px)",
-
                 justifyContent: "center",
                 alignItems: "center",
                 padding: 0,
-                lineHeight: 0,
-
-                transition: "all .3s ease",
+                transition:
+                  "background-color .3s ease, border-color .3s ease, color .3s ease",
               }}
             >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transform: `rotate(${darkMode ? 180 : 0}deg) scale(${darkMode ? 1 : 0.95})`,
+                  transition: "transform .3s cubic-bezier(.22,1,.36,1)",
+                }}
+              >
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </div>{" "}
             </button>
 
             <button
@@ -1728,37 +2221,11 @@ box-shadow .35s ease;
               style={{ borderRadius: 20 }}
             >
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
-                {[
-                  {
-                    end: 12,
-                    suffix: "+",
-                    label: "Projects Delivered",
-                  },
-                  {
-                    end: 8,
-                    suffix: "+",
-                    label: "REST APIs Integrated",
-                  },
-                  {
-                    end: 100,
-                    suffix: "%",
-                    label: "Responsive Design",
-                  },
-                  {
-                    end: 92.6,
-                    suffix: "%",
-                    decimals: 1,
-                    label: "MCA • SRM Institute",
-                  },
-                ].map((item) => (
+                {heroStats.map((item) => (
                   <div
                     key={item.label}
                     className="flex flex-col items-center justify-center text-center"
                     style={{
-                      //     display: "flex",
-                      //     flexDirection: "column",
-                      //     alignItems: "center",
-                      // minWidth:"120px",
                       width: "100%",
                       textAlign: "center",
                     }}
@@ -1972,56 +2439,7 @@ box-shadow .35s ease;
               </div>
             </Reveal>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {[
-                {
-                  title: "FinX Collectie",
-                  blurb:
-                    "Corporate landing site for AI-powered loan collection and recovery solutions, built with reusable React.js components.",
-                  grad: GRAD,
-                },
-                {
-                  title: "FinX Gym",
-                  blurb:
-                    "Product website for gym management and business solutions, with a consistent, cross-browser compatible design.",
-                  grad: GRAD2,
-                },
-                {
-                  title: "PayRupe Micro ATM",
-                  blurb:
-                    "Landing site for digital banking and cash withdrawal services, tuned for accessibility across screen sizes.",
-                  grad: GRAD,
-                },
-                {
-                  title: "FinX Payment Gateway",
-                  blurb:
-                    "Product website presenting secure online payment solutions through a clean, professional interface.",
-                  grad: GRAD2,
-                },
-                {
-                  title: "FinX School",
-                  blurb:
-                    "Corporate site for FinX School, showcasing school ERP features and education management solutions.",
-                  grad: GRAD,
-                },
-                {
-                  title: "FinX International",
-                  blurb:
-                    "Website highlighting global fintech services and business solutions for an international audience.",
-                  grad: GRAD2,
-                },
-                {
-                  title: "FinX AI Voice Bot",
-                  blurb:
-                    "Landing site for an AI-powered customer engagement product, built for a visually engaging first impression.",
-                  grad: GRAD,
-                },
-                {
-                  title: "PayRupe Lending",
-                  blurb:
-                    "Product website presenting digital lending and loan services, optimized across desktop, tablet, and mobile.",
-                  grad: GRAD2,
-                },
-              ].map((p, i) => (
+              {additionalProjects.map((p, i) => (
                 <Reveal key={p.title} delay={(i % 3) * 0.08}>
                   <MiniProjectCard
                     C={C}
@@ -2119,27 +2537,7 @@ box-shadow .35s ease;
             />
           </Reveal>
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                school: "SRM Institute of Science and Technology",
-                deg: "Master of Computer Applications",
-                period: "2023 – 2025",
-                score: "92.60%",
-              },
-              {
-                school:
-                  "B. S. Abdur Rahman Crescent Institute of Science and Technology",
-                deg: "Bachelor of Computer Applications",
-                period: "2020 – 2023",
-                score: "84.80%",
-              },
-              {
-                school: "St Joseph's Matric Hr. Sec. School",
-                deg: "Computer Science, 12th & 10th",
-                period: "2018 – 2020",
-                score: "83.00% / 61.50%",
-              },
-            ].map((e, i) => (
+            {educationData.map((e, i) => (
               <Reveal key={e.school} delay={i * 0.1}>
                 <GlassCard C={C} className="p-7 h-full flex flex-col">
                   <div
@@ -2195,57 +2593,7 @@ box-shadow .35s ease;
             />
           </Reveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              {
-                title: "Introduction to Front-End Development",
-                issuer: "Meta",
-                credId: "VR673AUXA2Z5",
-                url: "https://www.coursera.org/account/accomplishments/records/VR673AUXA2Z5",
-                grad: GRAD,
-              },
-              {
-                title: "Introduction to HTML, CSS, & JavaScript",
-                issuer: "IBM",
-                credId: "HPLYN828VAHP",
-                url: "https://www.coursera.org/account/accomplishments/records/HPLYN828VAHP",
-                grad: GRAD2,
-              },
-              {
-                title: "Version Control",
-                issuer: "Meta",
-                credId: "AAOHBHNXXSZ3",
-                url: "https://coursera.org/share/311b41d4d12cf747d73a2e8d80bc1186",
-                grad: GRAD,
-              },
-              {
-                title: "Programming with JavaScript",
-                issuer: "Meta",
-                credId: "F1CY9NBHB1YG",
-                url: "https://www.coursera.org/account/accomplishments/records/F1CY9NBHB1YG",
-                grad: GRAD2,
-              },
-              {
-                title: "HTML and CSS in Depth",
-                issuer: "Meta",
-                credId: "4RCGHKTDY49D",
-                url: "https://www.coursera.org/account/accomplishments/records/4RCGHKTDY49D",
-                grad: GRAD,
-              },
-              {
-                title: "React Basics",
-                issuer: "Meta",
-                credId: "IFOPTIJUNIK1",
-                url: "https://www.coursera.org/account/accomplishments/records/IFOPTIJUNIK1",
-                grad: GRAD2,
-              },
-              {
-                title: "SQL: A Practical Introduction for Querying Databases",
-                issuer: "Meta",
-                credId: "0NZIA1DG5O8C",
-                url: "https://www.coursera.org/account/accomplishments/verify/0NZIA1DG5O8C",
-                grad: GRAD,
-              },
-            ].map((c, i) => (
+            {certifications.map((c, i) => (
               <Reveal key={c.credId} delay={(i % 3) * 0.08}>
                 <CertCard
                   C={C}
@@ -2324,7 +2672,7 @@ box-shadow .35s ease;
                       borderRadius: 999,
                     }}
                   >
-                    <Mail size={16} /> harisharavind0309@gmail.com
+                    <Mail size={16} /> Get in Touch
                   </MagneticButton>
                   <MagneticButton
                     href="tel:+919566843200"
@@ -2339,7 +2687,7 @@ box-shadow .35s ease;
                       background: "rgba(255,255,255,0.03)",
                     }}
                   >
-                    <Phone size={16} /> +91 95668 43200
+                    <Phone size={16} /> Schedule a Call
                   </MagneticButton>
                 </div>
               </div>
@@ -2357,58 +2705,6 @@ box-shadow .35s ease;
               <div style={{ color: C.mutedDark, fontSize: 13 }}>
                 © 2026 Harish Aravind Kumar N S. Built with React.
               </div>
-              {/* <div className="flex items-center gap-4">
-  {[
-    {
-      Icon: Linkedin,
-      href: "https://www.linkedin.com/in/harisharavind3902/",
-      label: "LinkedIn",
-    },
-<a
-  href="https://github.com/HarishHaks"
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label="GitHub"
-  className="cta-ghost footer-icon flex items-center justify-center"
-  style={{
-    width: 42,
-    height: 42,
-    borderRadius: 12,
-    border: `1px solid ${C.border}`,
-    color: C.muted,
-    background: "rgba(255,255,255,0.03)",
-  }}
->
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 008 10.94c.58.1.79-.25.79-.56v-2.17c-3.25.71-3.94-1.57-3.94-1.57-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.7.08-.7 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.73 1.27 3.39.97.11-.75.41-1.27.74-1.56-2.59-.3-5.31-1.29-5.31-5.75 0-1.27.46-2.31 1.2-3.12-.12-.3-.52-1.52.12-3.17 0 0 .98-.31 3.2 1.19a11.1 11.1 0 015.83 0c2.22-1.5 3.2-1.19 3.2-1.19.64 1.65.24 2.87.12 3.17.75.81 1.2 1.85 1.2 3.12 0 4.47-2.72 5.45-5.32 5.74.42.37.8 1.1.8 2.22v3.29c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/>
-  </svg>
-</a>
-  ].map(({ Icon, href, label }) => (
-    <a
-      key={label}
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-className="cta-ghost footer-icon flex items-center justify-center"
-      style={{
-        width: 42,
-        height: 42,
-        borderRadius: 12,
-        border: `1px solid ${C.border}`,
-        color: C.muted,
-        background: "rgba(255,255,255,0.03)",
-      }}
-    >
-      <Icon size={18} />
-    </a>
-  ))}
-</div> */}
 
               <div className="flex items-center gap-4">
                 {/* LinkedIn */}
@@ -2467,9 +2763,7 @@ className="cta-ghost footer-icon flex items-center justify-center"
           </Reveal>
         </footer>
       </div>
-
       {/* ---------------- FLOATING CONTACT FAB ---------------- */}
-
       {/* Floating Theme Button (Mobile Only) */}
       <div
         className="fab-float fixed md:hidden"
@@ -2480,7 +2774,7 @@ className="cta-ghost footer-icon flex items-center justify-center"
         }}
       >
         <button
-          onClick={() => setDarkMode(!darkMode)}
+          onClick={() => setDarkMode((prev) => !prev)}
           aria-label="Toggle Theme"
           style={{
             width: 58,
@@ -2497,7 +2791,8 @@ className="cta-ghost footer-icon flex items-center justify-center"
             cursor: "pointer",
             boxShadow:
               "0 14px 35px rgba(0,0,0,.35), 0 0 18px rgba(139,92,246,.18)",
-            transition: "all .35s cubic-bezier(.22,1,.36,1)",
+            transition:
+              "background-color .3s ease, border-color .3s ease, color .3s ease, box-shadow .3s ease",
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
@@ -2513,7 +2808,6 @@ className="cta-ghost footer-icon flex items-center justify-center"
           )}
         </button>
       </div>
-
       <div
         className="fab-float fixed"
         style={{
